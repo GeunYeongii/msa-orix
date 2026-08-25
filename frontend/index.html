@@ -4,163 +4,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orix Capital Dashboard</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Orix Capital Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #003366;
+            color: white;
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 50px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .portal-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 1000px;
+            width: 90%;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 5px solid #ccc;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .service-card.lease { border-top-color: #007bff; }
+        .service-card.loan { border-top-color: #28a745; }
+        .service-card.exchange { border-top-color: #6f42c1; }
+
+        .service-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .service-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .service-desc {
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
 </head>
 
 <body>
     <header>
-        <div class="logo">Orix Capital Dashboard</div>
-        <div class="user-profile">
-            <div class="avatar"></div>
-            <span>주근영 고객님</span>
-        </div>
+        <h1>Orix Capital MSA Portal</h1>
     </header>
 
-    <main class="dashboard">
-        <!-- Lease Service Widget -->
-        <section class="widget" id="lease-widget">
-            <div class="widget-header">
-                <h2>내 리스 현황</h2>
-                <div class="status-indicator"></div>
-            </div>
-            <div class="widget-content" id="lease-content">
-                <div class="loader"></div>
-            </div>
-        </section>
+    <div class="portal-container">
+        <!-- Lease Service Link -->
+        <a href="/lease/" class="service-card lease">
+            <div class="service-icon">🚗</div>
+            <div class="service-title">리스 현황</div>
+            <div class="service-desc">장기렌터카 및 오토리스 관리</div>
+        </a>
 
-        <!-- Loan Service Widget -->
-        <section class="widget" id="loan-widget">
-            <div class="widget-header">
-                <h2>내 대출 현황</h2>
-                <div class="status-indicator"></div>
-            </div>
-            <div class="widget-content" id="loan-content">
-                <div class="loader"></div>
-            </div>
-        </section>
+        <!-- Loan Service Link -->
+        <a href="/loan/" class="service-card loan">
+            <div class="service-icon">💰</div>
+            <div class="service-title">대출 현황</div>
+            <div class="service-desc">신용대출 및 담보대출 현황</div>
+        </a>
 
-        <!-- Exchange Service Widget -->
-        <section class="widget" id="exchange-widget">
-            <div class="widget-header">
-                <h2>실시간 환율</h2>
-                <div class="status-indicator"></div>
-            </div>
-            <div class="widget-content" id="exchange-content">
-                <div class="loader"></div>
-            </div>
-        </section>
-    </main>
-
-    <script>
-        // API 엔드포인트
-        const ENDPOINTS = {
-            lease: '/api/lease/',
-            loan: '/api/loan/',
-            exchange: '/api/exchange/'
-        };
-
-        // 데이터 렌더링 함수들
-        function renderLease(data) {
-            return data.map(item => `
-                <div class="data-row">
-                    <div class="row-left">
-                        <strong>${item.leaseName}</strong>
-                        <span class="sub-text">${item.contractNo}</span>
-                    </div>
-                    <div class="row-right amount">${item.monthlyFee} 원/월</div>
-                </div>
-            `).join('');
-        }
-
-        function renderLoan(data) {
-            return data.map(item => `
-                <div class="data-row">
-                    <div class="row-left">
-                        <strong>${item.productName}</strong>
-                        <span class="sub-text">한도: ${item.limit}</span>
-                    </div>
-                    <div class="row-right rate">${item.interestRate}</div>
-                </div>
-            `).join('');
-        }
-
-        function renderExchange(data) {
-            return data.map(item => {
-                const isUp = item.change.startsWith('+');
-                const changeClass = isUp ? 'up' : 'down';
-                return `
-                <div class="data-row">
-                    <div class="row-left">
-                        <strong>${item.currency}</strong>
-                    </div>
-                    <div class="row-right">
-                        <span class="rate">${item.rate}</span>
-                        <span class="change ${changeClass}">${item.change}</span>
-                    </div>
-                </div>
-            `}).join('');
-        }
-
-        // 공통 Fetch 함수
-        async function fetchService(serviceName, renderFunc) {
-            const widget = document.getElementById(`${serviceName}-widget`);
-            const content = document.getElementById(`${serviceName}-content`);
-            const indicator = widget.querySelector('.status-indicator');
-
-            try {
-                // 캐시 방지를 위해 타임스탬프 추가
-                const response = await fetch(`${ENDPOINTS[serviceName]}?t=${new Date().getTime()}`);
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const json = await response.json();
-
-                // 성공 상태
-                widget.classList.remove('error');
-                indicator.classList.remove('error');
-                indicator.classList.add('success');
-                indicator.title = '서비스 정상 동작중';
-
-                content.innerHTML = renderFunc(json.data);
-
-            } catch (error) {
-                console.error(`${serviceName} fetch error:`, error);
-
-                // 에러 상태 (장애 격리 시연용)
-                widget.classList.add('error');
-                indicator.classList.remove('success');
-                indicator.classList.add('error');
-                indicator.title = '서비스 장애 발생';
-
-                content.innerHTML = `
-                    <div class="error-state">
-                        <div class="error-icon">⚠️</div>
-                        <h3>서비스 점검중</h3>
-                        <p>현재 <b>${serviceName.toUpperCase()}</b> 서비스 서버가 응답하지 않습니다.<br>나머지 서비스는 정상적으로 이용 가능합니다.</p>
-                        <button onclick="fetchService('${serviceName}', ${renderFunc.name})">다시 시도</button>
-                    </div>
-                `;
-            }
-        }
-
-        // 초기 로딩
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchService('lease', renderLease);
-            fetchService('loan', renderLoan);
-            fetchService('exchange', renderExchange);
-            
-            // 주기적 업데이트 (10초마다 자동 갱신 - 서비스 죽인 후 시연을 위해)
-            setInterval(() => {
-                fetchService('lease', renderLease);
-                fetchService('loan', renderLoan);
-                fetchService('exchange', renderExchange);
-            }, 5000);
-        });
-    </script>
+        <!-- Exchange Service Link -->
+        <a href="/exchange/" class="service-card exchange">
+            <div class="service-icon">💱</div>
+            <div class="service-title">환율 정보</div>
+            <div class="service-desc">실시간 환율 및 금융 동향</div>
+        </a>
+    </div>
 </body>
 
 </html>
