@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  api-gw:
+    image: nginx:alpine
+    container_name: msa-api-gw
+    ports:
+      - "80:80"
+    volumes:
+      - ./api-gw/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend
+      - lease
+      - loan
+      - exchange
+
+  frontend:
+    image: nginx:alpine
+    container_name: msa-frontend
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    expose:
+      - "80"
+
+  lease:
+    image: python:3.9-slim
+    container_name: msa-lease
+    volumes:
+      - ./lease-service:/app
+    command: python /app/server.py
+    expose:
+      - "8080"
+
+  loan:
+    image: python:3.9-slim
+    container_name: msa-loan
+    volumes:
+      - ./loan-service:/app
+    command: python /app/server.py
+    expose:
+      - "8080"
+
+  exchange:
+    image: python:3.9-slim
+    container_name: msa-exchange
+    volumes:
+      - ./exchange-service:/app
+    command: python /app/server.py
+    expose:
+      - "8080"
