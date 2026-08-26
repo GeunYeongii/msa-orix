@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>com.orix.msa</groupId>
+    <artifactId>loan-service</artifactId>
+    <version>1.0.0</version>
+    
+    <dependencies>
+        <!-- 의도적인 취약점 데모용 1: Log4Shell (CVE-2021-44228) 취약점이 있는 Log4j 버전 -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.14.1</version>
+        </dependency>
+        
+        <!-- 의도적인 취약점 데모용 2: Spring4Shell 취약점이 있는 구버전 Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>5.3.15</version>
+        </dependency>
+
+        <!-- 의도적인 취약점 데모용 3: 구버전 Jackson Databind -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.10.4</version>
+        </dependency>
+    </dependencies>
+</project>
