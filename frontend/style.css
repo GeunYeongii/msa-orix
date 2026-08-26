@@ -3,7 +3,7 @@
  * Dark mode, Glassmorphism, Micro-animations 
  */
 
- :root {
+:root {
     --bg-color: #0f1115;
     --card-bg: rgba(32, 36, 45, 0.6);
     --card-border: rgba(255, 255, 255, 0.05);
@@ -13,8 +13,10 @@
     --success-color: #10b981;
     --error-color: #ef4444;
     --warning-color: #f59e0b;
-    --up-color: #ef4444; /* 한국 금융권: 빨간색 상승 */
-    --down-color: #3b82f6; /* 한국 금융권: 파란색 하락 */
+    --up-color: #ef4444;
+    /* 한국 금융권: 빨간색 상승 */
+    --down-color: #3b82f6;
+    /* 한국 금융권: 파란색 하락 */
 }
 
 * {
@@ -26,7 +28,7 @@
 body {
     font-family: 'Inter', sans-serif;
     background-color: var(--bg-color);
-    background-image: 
+    background-image:
         radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15), transparent 25%),
         radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.1), transparent 25%);
     color: var(--text-primary);
@@ -128,7 +130,8 @@ header {
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background-color: var(--text-secondary); /* 기본 회색 */
+    background-color: var(--text-secondary);
+    /* 기본 회색 */
     transition: all 0.3s ease;
 }
 
@@ -144,9 +147,20 @@ header {
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.2); opacity: 0.7; }
-    100% { transform: scale(1); opacity: 1; }
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 0.7;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 /* Widget Content & Data Rows */
@@ -202,8 +216,13 @@ header {
     color: var(--accent-color);
 }
 
-.change.up { color: var(--up-color); }
-.change.down { color: var(--down-color); }
+.change.up {
+    color: var(--up-color);
+}
+
+.change.down {
+    color: var(--down-color);
+}
 
 /* Loader */
 .loader {
@@ -215,12 +234,20 @@ header {
     animation: spin 1s linear infinite;
     margin: auto;
     position: absolute;
-    top: 0; bottom: 0; left: 0; right: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Error State UI */
@@ -269,6 +296,13 @@ header {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
