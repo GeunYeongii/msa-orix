@@ -1,0 +1,4 @@
+flask
+flask-cors
+redis
+psycopg2-binary

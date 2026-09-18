@@ -1,15 +1,15 @@
-version: '3.8'
-
 networks:
   dmz-net:
     driver: bridge
   was-net:
     driver: bridge
+  db-net:
+    driver: bridge
 
 services:
   frontend:
     build: ./frontend
-    image: orix-msa/frontend:v1.0
+    image: baemin-msa/frontend:v2.0
     container_name: msa-frontend
     ports:
       - "80:80"
@@ -18,33 +18,176 @@ services:
 
   api-gw:
     build: ./api-gw
-    image: orix-msa/api-gw:v1.0
+    image: baemin-msa/api-gw:v2.0
     container_name: msa-api-gw
     depends_on:
-      - lease
-      - loan
-      - exchange
+      - baemin-store
+      - baemin-order
+      - baemin-payment
+      - baemin-delivery
+      - baemin-review
+      - baemin-notification
     networks:
       - dmz-net
       - was-net
 
-  lease:
-    build: ./lease-service
-    image: orix-msa/lease:v1.0
-    container_name: msa-lease
+  # 📬 Asynchronous Message Bus
+  redis-queue:
+    image: redis:alpine
+    container_name: msa-redis-queue
+    restart: always
     networks:
       - was-net
 
-  loan:
-    build: ./loan-service
-    image: orix-msa/loan:v1.0
-    container_name: msa-loan
+  # =========================================================================
+  # 🗄️ Independent Isolated Database Containers (Polyglot Persistence)
+  # =========================================================================
+  store-db:
+    image: postgres:15-alpine
+    container_name: msa-store-db
+    environment:
+      POSTGRES_DB: storedb
+      POSTGRES_USER: store_user
+      POSTGRES_PASSWORD: store_pass
+    networks:
+      - db-net
+
+  order-db:
+    image: mariadb:lts
+    container_name: msa-order-db
+    environment:
+      MYSQL_DATABASE: orderdb
+      MYSQL_USER: order_user
+      MYSQL_PASSWORD: order_pass
+      MYSQL_ROOT_PASSWORD: root_pass
+    networks:
+      - db-net
+
+  payment-db:
+    image: postgres:15-alpine
+    container_name: msa-payment-db
+    environment:
+      POSTGRES_DB: paymentdb
+      POSTGRES_USER: payment_user
+      POSTGRES_PASSWORD: payment_pass
+    networks:
+      - db-net
+
+  review-db:
+    image: mongo:6
+    container_name: msa-review-db
+    networks:
+      - db-net
+
+  notification-db:
+    image: postgres:15-alpine
+    container_name: msa-notification-db
+    environment:
+      POSTGRES_DB: notifdb
+      POSTGRES_USER: notif_user
+      POSTGRES_PASSWORD: notif_pass
+    networks:
+      - db-net
+
+  # =========================================================================
+  # 🚀 Polyglot Microservices (5 Distinct Languages & Runtimes)
+  # =========================================================================
+
+  # 1. Store Service: Node.js 20 (Express)
+  baemin-store:
+    build: ./baemin-store-service
+    image: baemin-msa/store:v2.0
+    environment:
+      - PG_HOST=store-db
+      - PG_PORT=5432
+      - PG_USER=store_user
+      - PG_PASSWORD=store_pass
+      - PG_DATABASE=storedb
+    depends_on:
+      - store-db
+    networks:
+      - was-net
+      - db-net
+
+  # 2. Order Service: Python 3.11 (Flask) - Scaled to 3 Replicas
+  baemin-order:
+    build: ./baemin-order-service
+    image: baemin-msa/order:v2.0
+    environment:
+      - MYSQL_HOST=order-db
+      - MYSQL_PORT=3306
+      - MYSQL_USER=order_user
+      - MYSQL_PASSWORD=order_pass
+      - MYSQL_DATABASE=orderdb
+      - REDIS_HOST=redis-queue
+      - REDIS_PORT=6379
+    depends_on:
+      - order-db
+      - redis-queue
+    networks:
+      - was-net
+      - db-net
+
+  # 3. Payment Service: Java 17 (Apache Tomcat 10)
+  baemin-payment:
+    build: ./baemin-payment-service
+    image: baemin-msa/payment:v2.0
+    environment:
+      - PG_HOST=payment-db
+      - PG_PORT=5432
+      - PG_USER=payment_user
+      - PG_PASSWORD=payment_pass
+      - PG_DATABASE=paymentdb
+      - REDIS_HOST=redis-queue
+      - REDIS_PORT=6379
+    depends_on:
+      - payment-db
+      - redis-queue
+    networks:
+      - was-net
+      - db-net
+
+  # 4. Delivery Service: Go 1.22 (Golang Goroutines)
+  baemin-delivery:
+    build: ./baemin-delivery-service
+    image: baemin-msa/delivery:v2.0
+    environment:
+      - REDIS_HOST=redis-queue
+      - REDIS_PORT=6379
+    depends_on:
+      - redis-queue
     networks:
       - was-net
 
-  exchange:
-    build: ./exchange-service
-    image: orix-msa/exchange:v1.0
-    container_name: msa-exchange
+  # 5. Review Service: Ruby 3.2 (Sinatra)
+  baemin-review:
+    build: ./baemin-review-service
+    image: baemin-msa/review:v2.0
+    environment:
+      - MONGO_HOST=review-db
+      - MONGO_PORT=27017
+      - MONGO_DATABASE=reviewdb
+    depends_on:
+      - review-db
     networks:
       - was-net
+      - db-net
+
+  # 6. Notification Service: Python 3.10 (Async Worker)
+  baemin-notification:
+    build: ./baemin-notification-service
+    image: baemin-msa/notification:v2.0
+    environment:
+      - PG_HOST=notification-db
+      - PG_PORT=5432
+      - PG_USER=notif_user
+      - PG_PASSWORD=notif_pass
+      - PG_DATABASE=notifdb
+      - REDIS_HOST=redis-queue
+      - REDIS_PORT=6379
+    depends_on:
+      - notification-db
+      - redis-queue
+    networks:
+      - was-net
+      - db-net

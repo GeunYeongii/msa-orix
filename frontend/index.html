@@ -4,109 +4,2454 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Orix Capital Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>배달의민족 | MSA 실시간 아키텍처 & 주문 시스템</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f4f7f6;
+        :root {
+            --baemin-mint: #2AC1BC;
+            --baemin-mint-dark: #1f9490;
+            --baemin-mint-light: #EBF8F7;
+            --baemin-black: #1E1E1E;
+            --baemin-gray: #717171;
+            --baemin-light-gray: #F6F6F6;
+            --baemin-border: #E8E8E8;
+            --baemin-yellow: #FFB300;
+            --baemin-red: #F95738;
+            --topo-bg: #0c1017;
+            --topo-card-bg: #161e29;
+            --topo-border: #26354a;
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            letter-spacing: -0.02em;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #070a0f;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--baemin-black);
+            overflow-x: hidden;
+        }
+
+        .workspace-wrapper {
+            display: flex;
+            gap: 24px;
+            align-items: stretch;
+            max-width: 1580px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* 📱 Smartphone Device Frame */
+        .phone-mockup {
+            width: 380px;
+            height: 840px;
+            background: #ffffff;
+            border-radius: 46px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 0 10px #1a222d;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 4px solid #10141b;
+            flex-shrink: 0;
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 24px;
+            background: #10141b;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .notch-speaker { width: 36px; height: 4px; background: #2d3748; border-radius: 4px; }
+        .notch-camera { width: 9px; height: 9px; background: #0c0e12; border-radius: 50%; }
+
+        .phone-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: #ffffff;
+            padding-top: 24px;
+            position: relative;
+        }
+
+        /* Baemin Mint Header */
+        .baemin-header {
+            background: var(--baemin-mint);
+            color: #ffffff;
+            padding: 14px 16px 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .header-location-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .current-address {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 12px;
+            font-size: 16px;
+        }
+
+        .search-bar-wrap {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-input {
+            border: none;
+            outline: none;
+            font-size: 12.5px;
+            width: 100%;
+            color: var(--baemin-black);
+        }
+
+        .screen-scroll-body {
+            flex: 1;
+            overflow-y: auto;
+            background: #ffffff;
+        }
+
+        .screen-scroll-body::-webkit-scrollbar { width: 4px; }
+        .screen-scroll-body::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
+
+        /* Category Grid */
+        .category-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            padding: 12px 8px;
+            gap: 4px;
+            text-align: center;
+            border-bottom: 8px solid var(--baemin-light-gray);
+        }
+
+        .cat-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
+            gap: 4px;
+            cursor: pointer;
+            padding: 8px 0;
+            border-radius: 10px;
+            transition: background 0.15s;
         }
 
-        header {
-            background-color: #003366;
-            color: white;
-            width: 100%;
-            padding: 20px 0;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 50px;
+        .cat-item:hover, .cat-item.active { background: var(--baemin-mint-light); }
+        .cat-icon { font-size: 20px; }
+        .cat-name { font-size: 11px; font-weight: 700; color: var(--baemin-black); }
+
+        .section-title-wrap {
+            padding: 14px 16px 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 28px;
+        .section-title { font-size: 14.5px; font-weight: 800; }
+
+        .store-list-container {
+            padding: 0 16px 20px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .portal-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-            max-width: 1000px;
-            width: 90%;
+        .store-card {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            border: 1px solid var(--baemin-border);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        .service-card {
-            background: white;
+        .store-card:hover {
+            border-color: var(--baemin-mint);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(42, 193, 188, 0.12);
+        }
+
+        .store-thumb {
+            width: 64px;
+            height: 64px;
+            background: #fff8f0;
             border-radius: 12px;
-            padding: 40px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .store-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .store-name { font-size: 14px; font-weight: 800; margin-bottom: 3px; }
+        .store-rating-row { display: flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 700; margin-bottom: 4px; }
+        .star-icon { color: var(--baemin-yellow); }
+        .store-sub-info { font-size: 11px; color: var(--baemin-gray); }
+
+        /* Store Detail & Sub-tabs */
+        .view-panel { display: none; flex-direction: column; height: 100%; }
+        .view-panel.active { display: flex; }
+
+        .detail-nav-bar {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--baemin-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .btn-nav-back {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--baemin-black);
+            padding: 2px 6px;
+        }
+
+        .store-hero-box {
+            padding: 16px;
             text-align: center;
-            text-decoration: none;
-            color: #333;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-top: 5px solid #ccc;
+            border-bottom: 1px solid var(--baemin-border);
         }
 
-        .service-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        .store-hero-title { font-size: 17px; font-weight: 800; margin-bottom: 4px; }
+        .store-hero-meta { font-size: 12px; color: var(--baemin-gray); }
+
+        .sub-tab-bar {
+            display: flex;
+            border-bottom: 1px solid var(--baemin-border);
+            background: #ffffff;
         }
 
-        .service-card.lease { border-top-color: #007bff; }
-        .service-card.loan { border-top-color: #28a745; }
-        .service-card.exchange { border-top-color: #6f42c1; }
-
-        .service-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
+        .sub-tab-item {
+            flex: 1;
+            text-align: center;
+            padding: 11px 0;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--baemin-gray);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
         }
 
-        .service-title {
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 10px;
+        .sub-tab-item.active {
+            color: var(--baemin-mint);
+            border-bottom-color: var(--baemin-mint);
         }
 
-        .service-desc {
+        .menu-list-wrap { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+        .menu-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid var(--baemin-border);
+            border-radius: 12px;
+            transition: border-color 0.15s;
+        }
+
+        .menu-card:hover { border-color: var(--baemin-mint); background: #fbfefd; }
+        .menu-title { font-size: 13.5px; font-weight: 800; margin-bottom: 3px; }
+        .menu-desc { font-size: 11px; color: var(--baemin-gray); margin-bottom: 5px; }
+        .menu-price { font-size: 13px; font-weight: 800; color: var(--baemin-black); }
+
+        .btn-add-cart {
+            background: var(--baemin-mint);
+            color: white;
+            border: none;
+            padding: 7px 12px;
+            border-radius: 8px;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-add-cart:hover { background: var(--baemin-mint-dark); }
+
+        .review-list-wrap { padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+        .review-card { border: 1px solid var(--baemin-border); border-radius: 12px; padding: 12px; background: #ffffff; }
+        .review-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .review-author { font-size: 12px; font-weight: 800; }
+        .review-stars { color: var(--baemin-yellow); font-size: 11px; }
+        .review-text { font-size: 12px; color: #333; line-height: 1.4; }
+        .review-date { font-size: 10.5px; color: #999; margin-top: 4px; }
+
+        .review-write-box { background: var(--baemin-light-gray); border-radius: 12px; padding: 12px; margin-bottom: 8px; }
+        .review-textarea { width: 100%; height: 50px; border: 1px solid var(--baemin-border); border-radius: 8px; padding: 8px; font-size: 12px; resize: none; outline: none; margin: 6px 0; }
+        .btn-submit-review { width: 100%; background: var(--baemin-mint); color: white; border: none; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+
+        .cart-bar { background: #ffffff; border-top: 1px solid var(--baemin-border); padding: 12px 14px; }
+        .btn-order-submit {
+            background: var(--baemin-mint);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 13px;
+            border-radius: 10px;
             font-size: 14px;
-            color: #777;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-order-submit:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+        /* 💳 Checkout & Payment View */
+        .checkout-container {
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #f8fafc;
+        }
+
+        .checkout-box {
+            background: #ffffff;
+            border: 1px solid var(--baemin-border);
+            border-radius: 14px;
+            padding: 13px 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .checkout-box-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--baemin-black);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .checkout-method-card {
+            border: 1.5px solid var(--baemin-border);
+            border-radius: 10px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 7px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .checkout-method-card:last-child { margin-bottom: 0; }
+
+        .checkout-method-card.active {
+            border-color: var(--baemin-mint);
+            background: var(--baemin-mint-light);
+        }
+
+        .checkout-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 6px;
+            color: #555;
+        }
+
+        .checkout-row.total {
+            font-size: 14.5px;
+            font-weight: 800;
+            color: var(--baemin-black);
+            border-top: 1px dashed var(--baemin-border);
+            padding-top: 9px;
+            margin-top: 8px;
+            margin-bottom: 0;
+        }
+
+        .phone-tab-bar {
+            height: 60px;
+            background: #ffffff;
+            border-top: 1px solid var(--baemin-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .tab-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--baemin-gray);
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .tab-btn.active { color: var(--baemin-mint); }
+        .tab-btn-icon { font-size: 16px; }
+
+        /* ========================================================================= */
+        /* 🌐 Interactive Drag & Zoom Architecture Canvas                            */
+        /* ========================================================================= */
+        .architecture-panel {
+            flex: 1;
+            background: var(--topo-bg);
+            border-radius: 28px;
+            border: 1px solid var(--topo-border);
+            padding: 24px;
+            color: #adbac7;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .arch-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--topo-border);
+            padding-bottom: 12px;
+        }
+
+        .arch-title {
+            font-size: 16.5px;
+            font-weight: 800;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .canvas-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ctrl-btn {
+            background: #1c2635;
+            color: #adbac7;
+            border: 1px solid #2d3b4e;
+            border-radius: 6px;
+            padding: 5px 10px;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .ctrl-btn:hover {
+            background: #28374d;
+            color: #ffffff;
+            border-color: var(--baemin-mint);
+        }
+
+        /* Viewport Container (Handles Pan & Zoom) */
+        .topology-canvas-container {
+            position: relative;
+            width: 100%;
+            height: 520px;
+            background: radial-gradient(circle at center, #111823 0%, #080c12 100%);
+            border-radius: 18px;
+            border: 1px solid #1f2b3b;
+            overflow: hidden;
+            cursor: grab;
+            user-select: none;
+        }
+
+        .topology-canvas-container:active {
+            cursor: grabbing;
+        }
+
+        .canvas-world {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2000px;
+            height: 2000px;
+            transform-origin: 0 0;
+        }
+
+        /* SVG Paths */
+        .traffic-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2000px;
+            height: 2000px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .flow-line {
+            stroke: #253346;
+            stroke-width: 2.5;
+            fill: none;
+        }
+
+        .traffic-flow {
+            stroke: var(--baemin-mint);
+            stroke-width: 2.5;
+            stroke-dasharray: 6, 8;
+            stroke-linecap: round;
+            fill: none;
+            animation: flowMove 1s linear infinite;
+        }
+
+        .traffic-flow.queue-flow {
+            stroke: #f0883e;
+            animation: flowMove 0.8s linear infinite;
+        }
+
+        @keyframes flowMove {
+            from { stroke-dashoffset: 28; }
+            to { stroke-dashoffset: 0; }
+        }
+
+        /* Draggable Nodes */
+        .arch-node {
+            position: absolute;
+            background: var(--topo-card-bg);
+            border: 1px solid #33445c;
+            border-radius: 14px;
+            padding: 12px 14px;
+            z-index: 5;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+            text-align: center;
+            cursor: move;
+            transition: box-shadow 0.15s, border-color 0.15s;
+        }
+
+        .arch-node:hover {
+            border-color: var(--baemin-mint);
+            box-shadow: 0 0 16px rgba(42, 193, 188, 0.35);
+        }
+
+        .arch-node.down {
+            border-color: #f85149 !important;
+            background: #341214 !important;
+            box-shadow: 0 0 20px rgba(248, 81, 73, 0.4) !important;
+        }
+
+        .node-icon { font-size: 20px; margin-bottom: 2px; }
+        .node-name { font-size: 13px; font-weight: 800; color: #ffffff; }
+        .node-port { font-size: 11px; color: #8b949e; font-family: monospace; }
+        
+        .node-led {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #2ea043;
+            box-shadow: 0 0 8px #2ea043;
+            display: inline-block;
+            margin-right: 4px;
+        }
+
+        .node-led.red { background: #f85149; box-shadow: 0 0 8px #f85149; }
+
+        .db-chip {
+            background: #0f1622;
+            color: #539bf5;
+            border: 1px solid #21324a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10.5px;
+            font-weight: 700;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        .pod-scale-badge {
+            background: rgba(42, 193, 188, 0.2);
+            color: #38d6d1;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-top: 3px;
+            display: inline-block;
+            border: 1px solid rgba(42, 193, 188, 0.4);
+        }
+
+        .lang-badge {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 6px;
+            margin-top: 3px;
+            display: inline-block;
+        }
+
+        .lang-node { background: rgba(104, 159, 99, 0.25); color: #83cd7c; border: 1px solid #689f63; }
+        .lang-python { background: rgba(53, 114, 165, 0.25); color: #58a6ff; border: 1px solid #3572a5; }
+        .lang-java { background: rgba(224, 112, 38, 0.25); color: #f0883e; border: 1px solid #e07026; }
+        .lang-go { background: rgba(0, 173, 216, 0.25); color: #38d6d1; border: 1px solid #00add8; }
+        .lang-ruby { background: rgba(204, 52, 45, 0.25); color: #ff7b72; border: 1px solid #cc342d; }
+
+        .traffic-flow.db-flow {
+            stroke: #58a6ff;
+            stroke-dasharray: 4, 6;
+            animation: flowMove 1.4s linear infinite;
+        }
+
+        .arch-node.db-node {
+            background: #091322;
+            border: 1.5px solid #23487a;
+            border-radius: 12px;
+            padding: 8px 10px;
+            min-width: 105px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+        }
+
+        .arch-node.db-node:hover {
+            border-color: #58a6ff;
+            box-shadow: 0 0 16px rgba(88, 166, 255, 0.4);
+        }
+
+        .db-cylinder-top {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .db-node-title {
+            font-size: 11.5px;
+            font-weight: 800;
+            color: #79c0ff;
+            font-family: monospace;
+        }
+
+        .db-node-tag {
+            font-size: 9.5px;
+            color: #8b949e;
+            margin-top: 2px;
+        }
+
+        .notif-badge {
+            position: absolute;
+            top: -4px;
+            right: -6px;
+            background: #f85149;
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 1px 5px;
+            border-radius: 10px;
+            border: 1.5px solid #ffffff;
+        }
+
+        /* Mobile Notification Modal Overlay */
+        .notif-modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: flex-end;
+            backdrop-filter: blur(3px);
+        }
+
+        .notif-modal-overlay.active {
+            display: flex;
+        }
+
+        .notif-modal-card {
+            background: #ffffff;
+            width: 100%;
+            max-height: 82%;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            box-shadow: 0 -8px 24px rgba(0,0,0,0.25);
+            display: flex;
+            flex-direction: column;
+            animation: slideUpModal 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUpModal {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        /* 📲 Realistic Mobile Push Notification Banner */
+        .mobile-push-banner {
+            position: absolute;
+            top: 32px;
+            left: 12px;
+            right: 12px;
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 18px;
+            padding: 12px 14px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(0, 0, 0, 0.06);
+            z-index: 2000;
+            cursor: pointer;
+            transform: translateY(-150%);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+            pointer-events: none;
+        }
+
+        .mobile-push-banner.active {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .push-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .push-app-info {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .push-app-icon {
+            font-size: 11px;
+            background: var(--baemin-mint);
+            color: #ffffff;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+        }
+
+        .push-app-name {
+            font-size: 11px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .push-time {
+            font-size: 10px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .push-title {
+            font-size: 12.5px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 2px;
+            line-height: 1.3;
+        }
+
+        .push-body {
+            font-size: 11px;
+            color: #475569;
+            line-height: 1.4;
+            font-weight: 500;
+        }
+
+        .mobile-push-banner.danger {
+            border-left: 4px solid #ef4444;
+        }
+
+        .mobile-push-banner.success {
+            border-left: 4px solid var(--baemin-mint);
+        }
+
+        .mobile-push-banner.warning {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .mobile-push-banner.info {
+            border-left: 4px solid #3b82f6;
+        }
+
+        /* ↕️ Standard Vertical Splitter Resizer */
+        .canvas-resizer-handle {
+            height: 14px;
+            width: 100%;
+            margin: 4px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: row-resize;
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .canvas-resizer-handle:hover,
+        .canvas-resizer-handle.resizing {
+            background: rgba(42, 193, 188, 0.05);
+            border-radius: 6px;
+        }
+
+        .resizer-line {
+            flex: 1;
+            height: 1px;
+            background: #1f2b3b;
+            transition: background 0.2s;
+        }
+
+        .canvas-resizer-handle:hover .resizer-line,
+        .canvas-resizer-handle.resizing .resizer-line {
+            background: rgba(42, 193, 188, 0.6);
+        }
+
+        .resizer-pill {
+            width: 44px;
+            height: 8px;
+            background: #141c28;
+            border: 1px solid #28394e;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            transition: all 0.2s;
+        }
+
+        .resizer-pill .pill-bar {
+            width: 22px;
+            height: 1px;
+            background: #4d6687;
+            border-radius: 1px;
+            transition: background 0.2s;
+        }
+
+        .canvas-resizer-handle:hover .resizer-pill,
+        .canvas-resizer-handle.resizing .resizer-pill {
+            background: #1a2738;
+            border-color: var(--baemin-mint);
+            box-shadow: 0 0 10px rgba(42, 193, 188, 0.4);
+        }
+
+        .canvas-resizer-handle:hover .pill-bar,
+        .canvas-resizer-handle.resizing .pill-bar {
+            background: var(--baemin-mint);
+        }
+
+        /* Terminal Logs at Bottom */
+        .terminal-container {
+            background: #070a0e;
+            border: 1px solid #1f2b3b;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-top: 4px;
+        }
+
+        .terminal-header {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #8b949e;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .terminal-screen {
+            font-family: monospace;
+            font-size: 11px;
+            color: #7ee787;
+            height: 110px;
+            overflow-y: auto;
+            line-height: 1.6;
         }
     </style>
 </head>
 
 <body>
-    <header>
-        <h1>Orix Capital MSA Portal</h1>
-    </header>
 
-    <div class="portal-container">
-        <!-- Lease Service Link -->
-        <a href="/lease/" class="service-card lease">
-            <div class="service-icon">🚗</div>
-            <div class="service-title">리스 현황</div>
-            <div class="service-desc">장기렌터카 및 오토리스 관리</div>
-        </a>
+    <div class="workspace-wrapper">
 
-        <!-- Loan Service Link -->
-        <a href="/loan/" class="service-card loan">
-            <div class="service-icon">💰</div>
-            <div class="service-title">대출 현황</div>
-            <div class="service-desc">신용대출 및 담보대출 현황</div>
-        </a>
+        <!-- 📱 Phone View: Real Baemin App -->
+        <div class="phone-mockup">
+            <div class="phone-notch">
+                <div class="notch-speaker"></div>
+                <div class="notch-camera"></div>
+            </div>
 
-        <!-- Exchange Service Link -->
-        <a href="/exchange/" class="service-card exchange">
-            <div class="service-icon">💱</div>
-            <div class="service-title">환율 정보</div>
-            <div class="service-desc">실시간 환율 및 금융 동향</div>
-        </a>
+            <div class="phone-screen">
+                <!-- 📲 Realistic Mobile Push Notification Banner (iOS / Android Style) -->
+                <div class="mobile-push-banner" id="mobilePushBanner" onclick="dismissMobilePush()">
+                    <div class="push-header">
+                        <div class="push-app-info">
+                            <span class="push-app-icon">🛵</span>
+                            <span class="push-app-name">배달의민족</span>
+                        </div>
+                        <span class="push-time">지금</span>
+                    </div>
+                    <div class="push-title" id="pushTitle">알림 제목</div>
+                    <div class="push-body" id="pushBody">알림 내용 요약</div>
+                </div>
+
+                <!-- 1. Main Home View -->
+                <div id="viewMain" class="view-panel active">
+                    <div class="baemin-header">
+                        <div class="header-location-bar">
+                            <div class="current-address">
+                                <span>강남구 테헤란로 306 카이트타워</span>
+                                <span style="font-size:10px;">▼</span>
+                            </div>
+                            <div class="header-icons">
+                                <span onclick="openNotificationModal()" style="cursor:pointer; position:relative; font-size:18px;">
+                                    🔔<span id="notifBadge" class="notif-badge" style="display:none;">0</span>
+                                </span>
+                                <span onclick="switchTab('orders')" style="cursor:pointer; font-size:18px;">📋</span>
+                            </div>
+                        </div>
+                        <div class="search-bar-wrap">
+                            <span>🔍</span>
+                            <input type="text" id="searchInput" class="search-input" placeholder="치킨, 떡볶이, 수제버거 맛집 검색" onkeyup="handleSearch()">
+                        </div>
+                    </div>
+
+                    <div class="screen-scroll-body">
+                        <!-- Category Row -->
+                        <div class="category-row">
+                            <div class="cat-item active" onclick="filterCategory('전체', this)">
+                                <span class="cat-icon">🏠</span>
+                                <span class="cat-name">전체</span>
+                            </div>
+                            <div class="cat-item" onclick="filterCategory('치킨', this)">
+                                <span class="cat-icon">🍗</span>
+                                <span class="cat-name">치킨</span>
+                            </div>
+                            <div class="cat-item" onclick="filterCategory('분식', this)">
+                                <span class="cat-icon">🥘</span>
+                                <span class="cat-name">분식</span>
+                            </div>
+                            <div class="cat-item" onclick="filterCategory('버거', this)">
+                                <span class="cat-icon">🍔</span>
+                                <span class="cat-name">버거</span>
+                            </div>
+                            <div class="cat-item" onclick="filterCategory('일식', this)">
+                                <span class="cat-icon">🍱</span>
+                                <span class="cat-name">일식</span>
+                            </div>
+                        </div>
+
+                        <div class="section-title-wrap">
+                            <h3 class="section-title">배민 추천 맛집</h3>
+                            <span style="font-size:11.5px; color:var(--baemin-gray);">기본순 ▼</span>
+                        </div>
+
+                        <!-- Store List -->
+                        <div class="store-list-container" id="storeListContainer">
+                            <div style="text-align:center; padding:30px; color:#888;">가게 목록을 불러오는 중...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Store Detail View -->
+                <div id="viewStoreDetail" class="view-panel">
+                    <div class="detail-nav-bar">
+                        <button class="btn-nav-back" onclick="showMainView()">←</button>
+                        <span id="detailNavTitle" style="font-weight:700; font-size:14.5px;">가게 상세</span>
+                        <span id="detailHeartBtn" style="cursor:pointer; font-size:18px; transition:transform 0.15s;" onclick="toggleFavoriteCurrentStore()">🤍</span>
+                    </div>
+
+                    <div class="store-hero-box">
+                        <h2 class="store-hero-title" id="detailStoreName">황금올리브 배민치킨 1호점</h2>
+                        <div class="store-hero-meta" id="detailStoreMeta">⭐ 4.9 | 배달 25~35분 | 배달팁 2,500원</div>
+                    </div>
+
+                    <!-- Sub Tab Bar -->
+                    <div class="sub-tab-bar">
+                        <div class="sub-tab-item active" id="subTabMenu" onclick="switchStoreTab('menu')">메뉴</div>
+                        <div class="sub-tab-item" id="subTabReview" onclick="switchStoreTab('review')">리뷰 (<span id="reviewCountBadge">0</span>)</div>
+                        <div class="sub-tab-item" id="subTabInfo" onclick="switchStoreTab('info')">가게정보</div>
+                    </div>
+
+                    <div class="screen-scroll-body">
+                        <!-- Menu Tab -->
+                        <div id="storeTabContentMenu" class="menu-list-wrap"></div>
+
+                        <!-- Review Tab -->
+                        <div id="storeTabContentReview" class="review-list-wrap" style="display:none;">
+                            <div class="review-write-box">
+                                <div style="font-size:12.5px; font-weight:700; color:#333;">✍️ 실시간 리뷰 작성하기</div>
+                                <textarea id="newReviewText" class="review-textarea" placeholder="음식 맛과 배달 속도는 어떠셨나요?"></textarea>
+                                <button class="btn-submit-review" onclick="submitReview()">리뷰 등록하기</button>
+                            </div>
+                            <div id="reviewItemsContainer">
+                                <div style="text-align:center; padding:20px; color:#888;">리뷰를 불러오는 중...</div>
+                            </div>
+                        </div>
+
+                        <!-- Info Tab -->
+                        <div id="storeTabContentInfo" style="display:none; padding:16px; font-size:12.5px; line-height:1.7; color:#555;">
+                            <strong>가게 소개:</strong> 매일 신선한 재료로 정성껏 조리하는 배민 공식 인증 맛집입니다.<br>
+                            <strong>영업시간:</strong> 매일 11:00 ~ 24:00 (연중무휴)<br>
+                            <strong>원산지:</strong> 닭고기(국내산), 쌀(국내산)<br>
+                            <strong>사업자등록번호:</strong> 120-81-12345
+                        </div>
+                    </div>
+
+                    <!-- Cart Bottom Bar -->
+                    <div class="cart-bar">
+                        <button class="btn-order-submit" id="btnOrderSubmit" onclick="openCheckoutView()" disabled>
+                            <span id="cartCountText">장바구니 0개</span>
+                            <span id="cartTotalText">0원 주문하기</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2-1. Checkout & Payment View (스토리텔링 결제 화면) -->
+                <div id="viewCheckout" class="view-panel">
+                    <div class="detail-nav-bar">
+                        <button class="btn-nav-back" onclick="switchView('viewStoreDetail')">←</button>
+                        <span style="font-weight:700; font-size:14.5px;">주문서 / 결제</span>
+                        <span style="font-size:11px; color:#2AC1BC; font-weight:700;">안전결제 🔒</span>
+                    </div>
+
+                    <div class="screen-scroll-body checkout-container">
+                        <!-- 1. 배달 주소 및 요청사항 -->
+                        <div class="checkout-box">
+                            <div class="checkout-box-title">
+                                <span>📍 배달 주소</span>
+                                <span style="font-size:11px; color:#2AC1BC; cursor:pointer;">변경</span>
+                            </div>
+                            <div style="font-size:13px; font-weight:700; margin-bottom:3px;">강남구 테헤란로 306 카이트타워</div>
+                            <div style="font-size:11px; color:var(--baemin-gray); margin-bottom:10px;">[도로명] 선릉역 4번 출구 인근</div>
+                            <div style="background:#f1f5f9; border-radius:8px; padding:8px 10px; font-size:11.5px; color:#334155;">
+                                <span>💬 라이더 요청: </span><strong>문 앞에 두고 벨 눌러주세요 🔔</strong>
+                            </div>
+                        </div>
+
+                        <!-- 2. 주문 내역 요약 -->
+                        <div class="checkout-box">
+                            <div class="checkout-box-title">
+                                <span id="checkoutStoreName">가게명</span>
+                                <span style="font-size:11px; color:var(--baemin-gray);" id="checkoutItemCount">총 0개</span>
+                            </div>
+                            <div id="checkoutItemsList" style="display:flex; flex-direction:column; gap:6px; font-size:12px;"></div>
+                        </div>
+
+                        <!-- 3. 결제 수단 선택 -->
+                        <div class="checkout-box">
+                            <div class="checkout-box-title">
+                                <span>💳 결제 수단</span>
+                                <span style="font-size:10px; background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:4px; font-weight:700;">배민페이 머니 추천</span>
+                            </div>
+                            <div class="checkout-method-card active" id="payOptBaemin" onclick="selectPayMethod(this, '배민페이')">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span style="font-size:18px;">🟢</span>
+                                    <div>
+                                        <div style="font-size:12.5px; font-weight:800; color:var(--baemin-black);">배민페이 머니 (계좌이체)</div>
+                                        <div style="font-size:10.5px; color:var(--baemin-mint-dark); font-weight:700;">잔액: 150,000원 (즉시 결제 가능)</div>
+                                    </div>
+                                </div>
+                                <span class="pay-check-icon" style="color:var(--baemin-mint); font-weight:800; font-size:14px;">✓</span>
+                            </div>
+                            <div class="checkout-method-card" id="payOptCard" onclick="selectPayMethod(this, '신용/체크카드')">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span style="font-size:18px;">💳</span>
+                                    <div style="font-size:12px; font-weight:700; color:#555;">신용/체크카드 결제</div>
+                                </div>
+                                <span class="pay-check-icon" style="color:#cbd5e1; font-size:11px;">선택</span>
+                            </div>
+                            <div class="checkout-method-card" id="payOptEasy" onclick="selectPayMethod(this, '간편결제')">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span style="font-size:18px;">📱</span>
+                                    <div style="font-size:12px; font-weight:700; color:#555;">토스페이 / 네이버페이</div>
+                                </div>
+                                <span class="pay-check-icon" style="color:#cbd5e1; font-size:11px;">선택</span>
+                            </div>
+                        </div>
+
+                        <!-- 4. 결제 금액 계산서 -->
+                        <div class="checkout-box">
+                            <div class="checkout-box-title">🧾 결제 상세 내역</div>
+                            <div class="checkout-row">
+                                <span>주문 금액</span>
+                                <span id="checkoutSubtotal" style="font-weight:700;">0원</span>
+                            </div>
+                            <div class="checkout-row">
+                                <span>배달팁</span>
+                                <span id="checkoutDeliveryFee" style="font-weight:700;">0원</span>
+                            </div>
+                            <div class="checkout-row total">
+                                <span>총 결제금액</span>
+                                <span style="color:#2AC1BC; font-size:16px;" id="checkoutGrandTotal">0원</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Checkout Fixed Footer Button -->
+                    <div class="cart-bar">
+                        <button class="btn-order-submit" id="btnPaySubmit" onclick="submitFinalPayment()">
+                            <span id="btnPayLabel">배민페이로 결제하기</span>
+                            <span id="btnPayTotalText">0원</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3. Orders / Delivery Tracking View -->
+                <div id="viewOrders" class="view-panel">
+                    <div class="detail-nav-bar">
+                        <button class="btn-nav-back" onclick="showMainView()">←</button>
+                        <span style="font-weight:700; font-size:14.5px;">주문 및 배달 현황</span>
+                        <span onclick="loadOrderHistory()" style="cursor:pointer;">🔄</span>
+                    </div>
+                    <div class="screen-scroll-body" style="padding:14px;" id="orderHistoryContainer">
+                        <div style="text-align:center; padding:40px 0; color:#999;">주문 내역이 없습니다.</div>
+                    </div>
+                </div>
+
+                <!-- 4. My Baemin View -->
+                <div id="viewMy" class="view-panel">
+                    <div class="detail-nav-bar">
+                        <button class="btn-nav-back" onclick="showMainView()">←</button>
+                        <span style="font-weight:700; font-size:14.5px;">My 배민</span>
+                        <span></span>
+                    </div>
+                    <div class="screen-scroll-body" style="padding:18px;">
+                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:18px;">
+                            <div style="width:48px; height:48px; background:#ebf8f7; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px;">👤</div>
+                            <div>
+                                <div style="font-size:16px; font-weight:800;">배민 VIP 회원님</div>
+                                <div style="font-size:12px; color:#2AC1BC; font-weight:700;">배민페이 머니: 150,000원</div>
+                            </div>
+                        </div>
+                        <div style="background:#f8fafc; border-radius:12px; padding:14px; font-size:12.5px; line-height:1.8; color:#555;">
+                            • 쿠폰함: 3장 보유<br>
+                            • 포인트: 2,400P<br>
+                            • 결제수단: 배민페이 계좌 연결됨
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Favorites / Wishlist View -->
+                <div id="viewFavorites" class="view-panel">
+                    <div class="detail-nav-bar">
+                        <button class="btn-nav-back" onclick="showMainView()">←</button>
+                        <span style="font-weight:700; font-size:14.5px;">찜한 가게</span>
+                        <span style="font-size:12px; color:#2AC1BC; font-weight:700;" id="favCountBadge">0곳</span>
+                    </div>
+                    <div class="screen-scroll-body" style="padding:14px;" id="favoritesListContainer">
+                        <div style="text-align:center; padding:50px 0; color:#888;">찜한 가게를 불러오는 중...</div>
+                    </div>
+                </div>
+
+                <!-- Bottom Tab Bar -->
+                <div class="phone-tab-bar">
+                    <button class="tab-btn active" id="tabHome" onclick="showMainView()">
+                        <span class="tab-btn-icon">🏠</span>
+                        <span>홈</span>
+                    </button>
+                    <button class="tab-btn" id="tabFavorites" onclick="switchTab('favorites')">
+                        <span class="tab-btn-icon">❤️</span>
+                        <span>찜</span>
+                    </button>
+                    <button class="tab-btn" id="tabOrders" onclick="switchTab('orders')">
+                        <span class="tab-btn-icon">📋</span>
+                        <span>주문내역</span>
+                    </button>
+                    <button class="tab-btn" id="tabMy" onclick="switchTab('my')">
+                        <span class="tab-btn-icon">👤</span>
+                        <span>my배민</span>
+                    </button>
+                </div>
+
+                <!-- 🔔 Real-time Notification Modal Overlay -->
+                <div class="notif-modal-overlay" id="notifModal">
+                    <div class="notif-modal-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:12px; margin-bottom:12px;">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <span style="font-size:20px;">🔔</span>
+                                <span style="font-size:16px; font-weight:800; color:#111;">알림 센터 (Notification)</span>
+                            </div>
+                            <button onclick="closeNotificationModal()" style="background:none; border:none; font-size:20px; cursor:pointer; color:#888;">✕</button>
+                        </div>
+
+                        <!-- Notification List Body -->
+                        <div id="notifListContainer" style="overflow-y:auto; flex:1; max-height:280px; padding-right:4px;">
+                            <div style="text-align:center; padding:30px 0; color:#999;">수신된 알림이 없습니다.</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 🌐 Right: Interactive Draggable & Zoomable Architecture Canvas -->
+        <div class="architecture-panel">
+            <div class="arch-top-bar">
+                <div class="arch-title">
+                    <span>🌐 배민 MSA 인터랙티브 아키텍처 맵</span>
+                </div>
+                <div class="canvas-controls">
+                    <button class="ctrl-btn" onclick="zoomCanvas(0.1)">🔍 +</button>
+                    <button class="ctrl-btn" onclick="zoomCanvas(-0.1)">🔍 -</button>
+                    <button class="ctrl-btn" onclick="resetCanvas()">↺ 리셋</button>
+                    <button class="ctrl-btn" onclick="checkAllMicroservices()">🔄 헬스체크</button>
+                    <button class="ctrl-btn" onclick="resetAllDatabases()" style="background:#3d1417; color:#f85149; border-color:#6e2528; font-weight:800;">🗑️ DB 초기화</button>
+                </div>
+            </div>
+
+            <!-- Drag & Zoom Canvas Viewport -->
+            <div class="topology-canvas-container" id="canvasContainer">
+                <div class="canvas-world" id="canvasWorld">
+                    <!-- SVG Traffic Flow Lines -->
+                    <svg class="traffic-svg" id="trafficSvg">
+                        <!-- Dynamic Curves Drawn by JS -->
+                        <g id="lineLayers"></g>
+                    </svg>
+
+                    <!-- Draggable Nodes -->
+                    <!-- Draggable Nodes -->
+                    <!-- 1. Client App -->
+                    <div class="arch-node" id="nodeClient" style="left:20px; top:390px; width:110px;">
+                        <div class="node-icon">📱</div>
+                        <div class="node-name">Client App</div>
+                        <div class="node-port">Browser / Mobile</div>
+                    </div>
+
+                    <!-- 2. Frontend Web Server (Nginx :80) -->
+                    <div class="arch-node" id="nodeFrontend" style="left:160px; top:390px; width:125px; border-color:#2AC1BC;">
+                        <div class="node-icon">🖥️</div>
+                        <div class="node-name"><span class="node-led"></span>msa-frontend</div>
+                        <div class="node-port">Nginx :80</div>
+                        <div style="font-size:10px; color:#2AC1BC; margin-top:3px;">Web UI Server</div>
+                    </div>
+
+                    <!-- 3. API Gateway (Nginx Ingress) -->
+                    <div class="arch-node" id="nodeGateway" style="left:310px; top:390px; width:125px; border-color:#e3b341;">
+                        <div class="node-icon">🛡️</div>
+                        <div class="node-name"><span class="node-led"></span>msa-api-gw</div>
+                        <div class="node-port">Nginx :80</div>
+                        <div style="font-size:10px; color:#e3b341; margin-top:3px;">API Reverse Proxy</div>
+                    </div>
+
+                    <!-- 4. Microservice Pods (All 6 Polyglot Services - Wide 145px Spacing) -->
+                    <div class="arch-node" id="nodeStore" style="left:470px; top:25px; width:145px;">
+                        <div class="node-icon">🏪</div>
+                        <div class="node-name"><span class="node-led" id="ledStore"></span>Store Pod</div>
+                        <div class="node-port">baemin-store :8081</div>
+                        <div><span class="lang-badge lang-node">🟢 Node.js 20</span></div>
+                    </div>
+
+                    <div class="arch-node" id="nodeOrder" style="left:470px; top:170px; width:145px;">
+                        <div class="node-icon">📦</div>
+                        <div class="node-name"><span class="node-led" id="ledOrder"></span>Order Pod</div>
+                        <div class="node-port">baemin-order :8082</div>
+                        <div><span class="lang-badge lang-python">🐍 Python 3.11</span> <span class="pod-scale-badge" id="orderScaleBadge">Scale: 3</span></div>
+                    </div>
+
+                    <div class="arch-node" id="nodePayment" style="left:470px; top:315px; width:145px;">
+                        <div class="node-icon">💳</div>
+                        <div class="node-name"><span class="node-led" id="ledPayment"></span>Payment Pod</div>
+                        <div class="node-port">baemin-payment :8083</div>
+                        <div><span class="lang-badge lang-java">☕ Java 17 Tomcat</span></div>
+                    </div>
+
+                    <div class="arch-node" id="nodeDelivery" style="left:470px; top:460px; width:145px;">
+                        <div class="node-icon">🛵</div>
+                        <div class="node-name"><span class="node-led" id="ledDelivery"></span>Delivery Pod</div>
+                        <div class="node-port">baemin-delivery :8084</div>
+                        <div><span class="lang-badge lang-go">🔵 Go 1.22</span></div>
+                    </div>
+
+                    <div class="arch-node" id="nodeReview" style="left:470px; top:605px; width:145px;">
+                        <div class="node-icon">💬</div>
+                        <div class="node-name"><span class="node-led" id="ledReview"></span>Review Pod</div>
+                        <div class="node-port">baemin-review :8085</div>
+                        <div><span class="lang-badge lang-ruby">💎 Ruby 3.2</span></div>
+                    </div>
+
+                    <div class="arch-node" id="nodeNotification" style="left:470px; top:750px; width:145px;">
+                        <div class="node-icon">🔔</div>
+                        <div class="node-name"><span class="node-led" id="ledNotification"></span>Notification Pod</div>
+                        <div class="node-port">notification :8086</div>
+                        <div><span class="lang-badge lang-python">🐍 Python 3.10</span></div>
+                    </div>
+
+                    <!-- 5. Independent Database Cylinder Nodes (Polyglot Persistence - Wide 145px Spacing) -->
+                    <div class="arch-node db-node" id="nodeDbStore" style="left:650px; top:25px; width:135px;">
+                        <div class="db-cylinder-top">🐘</div>
+                        <div class="db-node-title">msa-store-db</div>
+                        <div class="db-node-tag">PostgreSQL 15</div>
+                    </div>
+
+                    <div class="arch-node db-node" id="nodeDbOrder" style="left:650px; top:170px; width:135px;">
+                        <div class="db-cylinder-top">🐬</div>
+                        <div class="db-node-title">msa-order-db</div>
+                        <div class="db-node-tag">MariaDB 10 (MySQL)</div>
+                    </div>
+
+                    <div class="arch-node db-node" id="nodeDbPayment" style="left:650px; top:315px; width:135px;">
+                        <div class="db-cylinder-top">🐘</div>
+                        <div class="db-node-title">msa-payment-db</div>
+                        <div class="db-node-tag">PostgreSQL 15</div>
+                    </div>
+
+                    <div class="arch-node db-node" id="nodeDbDelivery" style="left:650px; top:460px; width:135px;">
+                        <div class="db-cylinder-top">⚡</div>
+                        <div class="db-node-title">msa-redis-queue</div>
+                        <div class="db-node-tag">Redis In-Memory</div>
+                    </div>
+
+                    <div class="arch-node db-node" id="nodeDbReview" style="left:650px; top:605px; width:135px;">
+                        <div class="db-cylinder-top">🍃</div>
+                        <div class="db-node-title">msa-review-db</div>
+                        <div class="db-node-tag">MongoDB 6 (NoSQL)</div>
+                    </div>
+
+                    <div class="arch-node db-node" id="nodeDbNotif" style="left:650px; top:750px; width:135px;">
+                        <div class="db-cylinder-top">🐘</div>
+                        <div class="db-node-title">msa-notif-db</div>
+                        <div class="db-node-tag">PostgreSQL 15</div>
+                    </div>
+
+                    <!-- 6. Asynchronous Message Queue (Redis Event Bus) -->
+                    <div class="arch-node" id="nodeRedis" style="left:825px; top:380px; width:165px; border:1.5px dashed #f0883e; background:#22150c;">
+                        <div class="node-icon">📬</div>
+                        <div class="node-name" style="color:#f0883e;">Redis Event Queue</div>
+                        <div class="node-port">msa-redis-queue :6379</div>
+                        <div style="font-size:10px; color:#f0883e; margin-top:3px;">비동기 이벤트 버스</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vertical Splitter Resizer Handle -->
+            <div class="canvas-resizer-handle" id="canvasResizerHandle">
+                <div class="resizer-line"></div>
+                <div class="resizer-pill">
+                    <span class="pill-bar"></span>
+                    <span class="pill-bar"></span>
+                </div>
+                <div class="resizer-line"></div>
+            </div>
+
+            <!-- Terminal Screen -->
+            <div class="terminal-container" id="terminalContainer">
+                <div class="terminal-header">
+                    <span>📜 실시간 MSA 트래픽 & 이벤트 버스 스트림 (Live Event Stream)</span>
+                    <span style="color:#2AC1BC;">🟢 Active Mesh Connected</span>
+                </div>
+                <div class="terminal-screen" id="logConsole">
+                    [System] Interactive Canvas Ready (Node Drag & Zoom Enabled).<br>
+                    [Topology] Baemin 5 Microservices Mesh Connected.<br>
+                    [Network] Dual-NIC Isolation: dmz-net & was-net active.<br>
+                    [Load Balancer] Order Service scaled to 3 Replicas.<br>
+                </div>
+            </div>
+        </div>
+
     </div>
+
+    <script>
+        let allStores = [];
+        let currentStore = null;
+        let cartItems = [];
+        let favoriteStoreIds = new Set([1]); // Default favorite: 황금올리브 BBQ 본점
+        let currentCategory = '전체';
+
+        function appendLog(msg) {
+            const consoleBox = document.getElementById('logConsole');
+            const time = new Date().toLocaleTimeString();
+            consoleBox.innerHTML += `[${time}] ${msg}<br>`;
+            consoleBox.scrollTop = consoleBox.scrollHeight;
+        }
+
+        // =========================================================================
+        // 📲 Realistic Mobile Push Notification Controller
+        // =========================================================================
+        let pushTimer = null;
+        function showMobilePush(title, body, type = 'success', duration = 3600) {
+            const banner = document.getElementById('mobilePushBanner');
+            const titleEl = document.getElementById('pushTitle');
+            const bodyEl = document.getElementById('pushBody');
+            if (!banner || !titleEl || !bodyEl) return;
+
+            if (pushTimer) {
+                clearTimeout(pushTimer);
+                pushTimer = null;
+            }
+
+            banner.className = `mobile-push-banner ${type}`;
+            titleEl.textContent = title;
+            bodyEl.textContent = body;
+
+            // Trigger slide down
+            requestAnimationFrame(() => {
+                banner.classList.add('active');
+            });
+
+            pushTimer = setTimeout(() => {
+                dismissMobilePush();
+            }, duration);
+        }
+
+        function dismissMobilePush() {
+            const banner = document.getElementById('mobilePushBanner');
+            if (!banner) return;
+            banner.classList.remove('active');
+            if (pushTimer) {
+                clearTimeout(pushTimer);
+                pushTimer = null;
+            }
+        }
+
+        // =========================================================================
+        // 🚀 Interactive Node Drag & Canvas Pan/Zoom Engine
+        // =========================================================================
+        const DEFAULT_SCALE = 0.62;
+        const DEFAULT_PAN_X = 15;
+        const DEFAULT_PAN_Y = 5;
+
+        let scale = DEFAULT_SCALE;
+        let panX = DEFAULT_PAN_X;
+        let panY = DEFAULT_PAN_Y;
+        let isPanning = false;
+        let startPanX = 0;
+        let startPanY = 0;
+
+        let activeDragNode = null;
+        let nodeDragOffsetX = 0;
+        let nodeDragOffsetY = 0;
+
+        const container = document.getElementById('canvasContainer');
+        const world = document.getElementById('canvasWorld');
+        const lineLayers = document.getElementById('lineLayers');
+
+        // Connections Definition
+        const connections = [
+            // Client -> Frontend Web Server
+            { from: 'nodeClient', to: 'nodeFrontend', type: 'api', id: 'flowClientFe' },
+
+            // Frontend Web Server -> API Gateway Ingress
+            { from: 'nodeFrontend', to: 'nodeGateway', type: 'api', id: 'flowFeGw' },
+
+            // API Gateway Ingress -> 6 Microservice Pods
+            { from: 'nodeGateway', to: 'nodeStore', type: 'api', id: 'flowStore' },
+            { from: 'nodeGateway', to: 'nodeOrder', type: 'api', id: 'flowOrder' },
+            { from: 'nodeGateway', to: 'nodePayment', type: 'api', id: 'flowPayment' },
+            { from: 'nodeGateway', to: 'nodeDelivery', type: 'api', id: 'flowDelivery' },
+            { from: 'nodeGateway', to: 'nodeReview', type: 'api', id: 'flowReview' },
+            { from: 'nodeGateway', to: 'nodeNotification', type: 'api', id: 'flowNotification' },
+
+            // Isolated Database-per-Service 1:1 Pipelines (Pod -> DB)
+            { from: 'nodeStore', to: 'nodeDbStore', type: 'db', id: 'flowStoreDb' },
+            { from: 'nodeOrder', to: 'nodeDbOrder', type: 'db', id: 'flowOrderDb' },
+            { from: 'nodePayment', to: 'nodeDbPayment', type: 'db', id: 'flowPaymentDb' },
+            { from: 'nodeDelivery', to: 'nodeDbDelivery', type: 'db', id: 'flowDeliveryDb' },
+            { from: 'nodeReview', to: 'nodeDbReview', type: 'db', id: 'flowReviewDb' },
+            { from: 'nodeNotification', to: 'nodeDbNotif', type: 'db', id: 'flowNotifDb' },
+
+            // Asynchronous EDA Message Queue Pipelines (Order -> Redis -> Workers)
+            { from: 'nodeOrder', to: 'nodeRedis', type: 'queue', id: 'flowOrderQueue' },
+            { from: 'nodeRedis', to: 'nodePayment', type: 'queue', id: 'flowQueuePayment' },
+            { from: 'nodeRedis', to: 'nodeDelivery', type: 'queue', id: 'flowQueueDelivery' },
+            { from: 'nodeRedis', to: 'nodeNotification', type: 'queue', id: 'flowQueueNotif' }
+        ];
+
+        function getNodeCenter(el) {
+            return {
+                x: el.offsetLeft + el.offsetWidth / 2,
+                y: el.offsetTop + el.offsetHeight / 2
+            };
+        }
+
+        function updateLines() {
+            lineLayers.innerHTML = '';
+            connections.forEach(conn => {
+                const elFrom = document.getElementById(conn.from);
+                const elTo = document.getElementById(conn.to);
+                if (!elFrom || !elTo) return;
+
+                const cFrom = getNodeCenter(elFrom);
+                const cTo = getNodeCenter(elTo);
+
+                // Calculate Smooth Cubic Bezier Curve
+                const dx = (cTo.x - cFrom.x) * 0.45;
+                const pathData = `M ${cFrom.x} ${cFrom.y} C ${cFrom.x + dx} ${cFrom.y}, ${cTo.x - dx} ${cTo.y}, ${cTo.x} ${cTo.y}`;
+
+                // Base Line
+                const baseLine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                baseLine.setAttribute('d', pathData);
+                baseLine.setAttribute('class', 'flow-line');
+
+                // Flowing Traffic Line
+                const flowLine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                flowLine.setAttribute('d', pathData);
+                let flowClass = 'traffic-flow';
+                if (conn.type === 'queue') flowClass += ' queue-flow';
+                if (conn.type === 'db') flowClass += ' db-flow';
+                flowLine.setAttribute('class', flowClass);
+                flowLine.setAttribute('id', conn.id);
+
+                // If source or target is down, hide flow line
+                if (elTo.classList.contains('down') || elFrom.classList.contains('down')) {
+                    flowLine.style.display = 'none';
+                }
+
+                lineLayers.appendChild(baseLine);
+                lineLayers.appendChild(flowLine);
+            });
+        }
+
+        // Apply Transform
+        function applyTransform() {
+            world.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+        }
+
+        function zoomCanvas(delta) {
+            scale = Math.min(Math.max(0.35, scale + delta), 2.5);
+            applyTransform();
+        }
+
+        function resetCanvas() {
+            scale = DEFAULT_SCALE;
+            panX = DEFAULT_PAN_X;
+            panY = DEFAULT_PAN_Y;
+            container.style.height = '520px';
+            const term = document.getElementById('logConsole');
+            if (term) term.style.height = '110px';
+            applyTransform();
+        }
+
+        // Wheel Zoom
+        container.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const delta = e.deltaY < 0 ? 0.08 : -0.08;
+            zoomCanvas(delta);
+        }, { passive: false });
+
+        // =========================================================================
+        // ↕️ Vertical Resizer Splitter Engine (Canvas vs Terminal Stream)
+        // =========================================================================
+        const resizerHandle = document.getElementById('canvasResizerHandle');
+        const terminalScreen = document.getElementById('logConsole');
+        let isResizing = false;
+        let startResizeY = 0;
+        let startCanvasHeight = 520;
+        let startTerminalHeight = 110;
+
+        if (resizerHandle) {
+            resizerHandle.addEventListener('mousedown', (e) => {
+                isResizing = true;
+                startResizeY = e.clientY;
+                startCanvasHeight = container.offsetHeight;
+                startTerminalHeight = terminalScreen ? terminalScreen.offsetHeight : 110;
+                resizerHandle.classList.add('resizing');
+                document.body.style.cursor = 'row-resize';
+                document.body.style.userSelect = 'none';
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        }
+
+        // Mouse Pan & Drag Listeners
+        container.addEventListener('mousedown', (e) => {
+            const targetNode = e.target.closest('.arch-node');
+            if (targetNode) {
+                // Node Drag Start
+                activeDragNode = targetNode;
+                const rect = targetNode.getBoundingClientRect();
+                nodeDragOffsetX = (e.clientX - rect.left) / scale;
+                nodeDragOffsetY = (e.clientY - rect.top) / scale;
+                e.stopPropagation();
+            } else {
+                // Canvas Pan Start
+                isPanning = true;
+                startPanX = e.clientX - panX;
+                startPanY = e.clientY - panY;
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (isResizing) {
+                const dy = e.clientY - startResizeY;
+                // Min 220px, Max 720px for canvas
+                const newCanvasH = Math.max(220, Math.min(720, startCanvasHeight + dy));
+                // Inverse for terminal: min 60px, max 420px
+                const newTerminalH = Math.max(60, Math.min(420, startTerminalHeight - dy));
+
+                container.style.height = `${newCanvasH}px`;
+                if (terminalScreen) {
+                    terminalScreen.style.height = `${newTerminalH}px`;
+                }
+                return;
+            }
+
+            if (activeDragNode) {
+                const containerRect = container.getBoundingClientRect();
+                const worldX = (e.clientX - containerRect.left - panX) / scale - nodeDragOffsetX;
+                const worldY = (e.clientY - containerRect.top - panY) / scale - nodeDragOffsetY;
+
+                activeDragNode.style.left = `${Math.max(10, worldX)}px`;
+                activeDragNode.style.top = `${Math.max(10, worldY)}px`;
+                updateLines();
+            } else if (isPanning) {
+                panX = e.clientX - startPanX;
+                panY = e.clientY - startPanY;
+                applyTransform();
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isResizing) {
+                isResizing = false;
+                if (resizerHandle) resizerHandle.classList.remove('resizing');
+                document.body.style.cursor = '';
+                document.body.style.userSelect = '';
+            }
+            if (activeDragNode) {
+                activeDragNode = null;
+            }
+            isPanning = false;
+        });
+
+        // =========================================================================
+        // Baemin App Business Logic
+        // =========================================================================
+
+        // 1. Load Stores from baemin-store (:8081)
+        async function loadStores() {
+            try {
+                const res = await fetch('/api/store/stores');
+                if (!res.ok) throw new Error('가게 서비스 응답 오류');
+                allStores = await res.json();
+                renderStoreList(allStores);
+            } catch (err) {
+                document.getElementById('storeListContainer').innerHTML = 
+                    `<div style="text-align:center; padding:30px; color:#f85149;">가게 서비스(store-service) 연결 실패: ${err.message}</div>`;
+            }
+        }
+
+        function renderStoreList(stores) {
+            const container = document.getElementById('storeListContainer');
+            container.innerHTML = '';
+            if (!stores || stores.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:30px; color:#888;">해당 카테고리의 가게가 없습니다.</div>';
+                return;
+            }
+            stores.forEach(s => {
+                const tipVal = s.tip || s.deliveryFee || 0;
+                const emojiVal = s.emoji || (s.category === '치킨' ? '🍗' : s.category === '분식' ? '🥘' : s.category === '버거' ? '🍔' : '🍱');
+                const isFav = favoriteStoreIds.has(Number(s.id));
+                const card = document.createElement('div');
+                card.className = 'store-card';
+                card.onclick = () => openStoreDetail(s.id);
+                card.innerHTML = `
+                    <div class="store-thumb">${emojiVal}</div>
+                    <div class="store-info">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <div class="store-name">${s.name}</div>
+                            <span class="store-heart-btn" data-store-id="${s.id}" style="font-size:16px; cursor:pointer; padding:0 2px; transition:transform 0.15s;" onclick="toggleFavoriteStore(${s.id}, event)">${isFav ? '❤️' : '🤍'}</span>
+                        </div>
+                        <div class="store-rating-row">
+                            <span class="star-icon">★</span>
+                            <span>${s.rating}</span>
+                            <span style="color:#888; font-weight:400;">(${s.category})</span>
+                        </div>
+                        <div class="store-sub-info">
+                            배달 ${s.deliveryTime} • 배달팁 ${tipVal.toLocaleString()}원
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // =========================================================================
+        // ❤️ Wishlist / Favorite Stores Controller
+        // =========================================================================
+        function toggleFavoriteStore(storeId, event) {
+            if (event) event.stopPropagation();
+            const id = Number(storeId);
+            const store = allStores.find(s => s.id === id) || currentStore;
+            const storeName = store ? store.name : '가게';
+
+            if (favoriteStoreIds.has(id)) {
+                favoriteStoreIds.delete(id);
+                showMobilePush('찜 해제', `${storeName}이(가) 찜 목록에서 제외되었습니다.`, 'info', 2500);
+            } else {
+                favoriteStoreIds.add(id);
+                showMobilePush('찜 완료', `${storeName}이(가) 찜한 가게에 추가되었습니다.`, 'success', 2500);
+            }
+
+            updateFavoritesUI();
+        }
+
+        function toggleFavoriteCurrentStore() {
+            if (!currentStore) return;
+            toggleFavoriteStore(currentStore.id);
+        }
+
+        function updateFavoritesUI() {
+            // 1. Update Heart in Store Detail Nav Bar
+            const heartBtn = document.getElementById('detailHeartBtn');
+            if (heartBtn && currentStore) {
+                const isFav = favoriteStoreIds.has(Number(currentStore.id));
+                heartBtn.textContent = isFav ? '❤️' : '🤍';
+                heartBtn.style.transform = 'scale(1.25)';
+                setTimeout(() => { heartBtn.style.transform = 'scale(1)'; }, 150);
+            }
+
+            // 2. Update Favorites Tab Badge
+            const countBadge = document.getElementById('favCountBadge');
+            if (countBadge) {
+                countBadge.textContent = `${favoriteStoreIds.size}곳`;
+            }
+
+            // 3. Update all Heart buttons directly in DOM without destroying or re-rendering store list
+            document.querySelectorAll('.store-heart-btn').forEach(btn => {
+                const btnStoreId = Number(btn.getAttribute('data-store-id'));
+                if (btnStoreId) {
+                    const isFav = favoriteStoreIds.has(btnStoreId);
+                    btn.textContent = isFav ? '❤️' : '🤍';
+                }
+            });
+
+            // 4. Re-render Favorites View if active
+            const favView = document.getElementById('viewFavorites');
+            if (favView && favView.classList.contains('active')) {
+                renderFavoritesList();
+            }
+        }
+
+        function renderFavoritesList() {
+            const container = document.getElementById('favoritesListContainer');
+            if (!container) return;
+
+            const favStores = allStores.filter(s => favoriteStoreIds.has(Number(s.id)));
+            const countBadge = document.getElementById('favCountBadge');
+            if (countBadge) countBadge.textContent = `${favStores.length}곳`;
+
+            if (favStores.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding:70px 20px; color:#888;">
+                        <div style="font-size:44px; margin-bottom:14px;">🤍</div>
+                        <div style="font-size:15px; font-weight:800; color:#1e293b; margin-bottom:6px;">찜한 가게가 없습니다</div>
+                        <div style="font-size:12px; color:#94a3b8; line-height:1.5;">마음에 드는 가게에 하트를 눌러<br>나만의 맛집 목록을 만들어보세요!</div>
+                        <button onclick="showMainView()" style="margin-top:18px; padding:9px 18px; background:var(--baemin-mint); color:#fff; border:none; border-radius:10px; font-size:12.5px; font-weight:700; cursor:pointer;">
+                            맛집 둘러보기
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            favStores.forEach(s => {
+                const tipVal = s.tip || s.deliveryFee || 0;
+                const emojiVal = s.emoji || (s.category === '치킨' ? '🍗' : s.category === '분식' ? '🥘' : s.category === '버거' ? '🍔' : '🍱');
+                const card = document.createElement('div');
+                card.className = 'store-card';
+                card.onclick = () => openStoreDetail(s.id);
+                card.innerHTML = `
+                    <div class="store-thumb">${emojiVal}</div>
+                    <div class="store-info">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <div class="store-name">${s.name}</div>
+                            <span class="store-heart-btn" data-store-id="${s.id}" style="font-size:16px; cursor:pointer; padding:0 2px;" title="찜 해제" onclick="toggleFavoriteStore(${s.id}, event)">❤️</span>
+                        </div>
+                        <div class="store-rating-row">
+                            <span class="star-icon">★</span>
+                            <span>${s.rating}</span>
+                            <span style="color:#888; font-weight:400;">(${s.category})</span>
+                        </div>
+                        <div class="store-sub-info">
+                            배달 ${s.deliveryTime} • 배달팁 ${tipVal.toLocaleString()}원
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Category Filter
+        function filterCategory(category, el) {
+            currentCategory = category;
+            document.querySelectorAll('.cat-item').forEach(c => c.classList.remove('active'));
+            if (el) el.classList.add('active');
+
+            if (category === '전체') {
+                renderStoreList(allStores);
+            } else {
+                const filtered = allStores.filter(s => s.category === category);
+                renderStoreList(filtered);
+            }
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            if (!query) {
+                renderStoreList(allStores);
+                return;
+            }
+            const filtered = allStores.filter(s => s.name.toLowerCase().includes(query) || s.category.toLowerCase().includes(query));
+            renderStoreList(filtered);
+        }
+
+        // 2. Open Store Detail & Menus
+        async function openStoreDetail(storeId) {
+            try {
+                const res = await fetch(`/api/store/store/${storeId}`);
+                if (!res.ok) throw new Error('가게 정보를 불러올 수 없습니다.');
+                const data = await res.json();
+                currentStore = data.store || data;
+                const tipVal = currentStore.tip || currentStore.deliveryFee || 0;
+
+                document.getElementById('detailStoreName').innerText = currentStore.name;
+                document.getElementById('detailStoreMeta').innerText = 
+                    `⭐ ${currentStore.rating} | 배달 ${currentStore.deliveryTime} | 배달팁 ${tipVal.toLocaleString()}원`;
+
+                // Update Heart State in Detail View
+                const isFav = favoriteStoreIds.has(Number(storeId));
+                const heartBtn = document.getElementById('detailHeartBtn');
+                if (heartBtn) heartBtn.textContent = isFav ? '❤️' : '🤍';
+
+                const menuContainer = document.getElementById('storeTabContentMenu');
+                menuContainer.innerHTML = '';
+                cartItems = [];
+                updateCartUI();
+
+                const menus = data.menus || currentStore.menus || [];
+                menus.forEach(m => {
+                    const card = document.createElement('div');
+                    card.className = 'menu-card';
+                    card.innerHTML = `
+                        <div>
+                            <div class="menu-title">${m.isBest ? '👑 ' : ''}${m.name}</div>
+                            <div class="menu-desc">${m.desc || m.description || ''}</div>
+                            <div class="menu-price">${(m.price || 0).toLocaleString()}원</div>
+                        </div>
+                        <button class="btn-add-cart" onclick="addToCart(${m.id}, '${m.name}', ${m.price})">+ 담기</button>
+                    `;
+                    menuContainer.appendChild(card);
+                });
+
+                switchStoreTab('menu');
+                loadReviewsCount(storeId);
+                switchView('viewStoreDetail');
+            } catch (err) {
+                showMobilePush('가게 정보 오류', err.message || '가게 정보를 불러오지 못했습니다.', 'danger');
+            }
+        }
+
+        function switchStoreTab(tab) {
+            document.getElementById('subTabMenu').classList.toggle('active', tab === 'menu');
+            document.getElementById('subTabReview').classList.toggle('active', tab === 'review');
+            document.getElementById('subTabInfo').classList.toggle('active', tab === 'info');
+
+            document.getElementById('storeTabContentMenu').style.display = (tab === 'menu' ? 'flex' : 'none');
+            document.getElementById('storeTabContentReview').style.display = (tab === 'review' ? 'flex' : 'none');
+            document.getElementById('storeTabContentInfo').style.display = (tab === 'info' ? 'block' : 'none');
+
+            if (tab === 'review' && currentStore) {
+                loadStoreReviews(currentStore.id);
+            }
+        }
+
+        // 3. Review Service Integration
+        async function loadReviewsCount(storeId) {
+            try {
+                const res = await fetch(`/api/review/review/store/${storeId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('reviewCountBadge').innerText = data.totalCount || 0;
+                }
+            } catch {
+                document.getElementById('reviewCountBadge').innerText = '-';
+            }
+        }
+
+        async function loadStoreReviews(storeId) {
+            const container = document.getElementById('reviewItemsContainer');
+            container.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">리뷰 서비스(:8085)에서 리뷰 로딩 중...</div>';
+            try {
+                const res = await fetch(`/api/review/review/store/${storeId}`);
+                if (!res.ok) throw new Error('리뷰 서비스 응답 없음 (Service Down)');
+                const data = await res.json();
+
+                if (!data.reviews || data.reviews.length === 0) {
+                    container.innerHTML = '<div style="text-align:center; padding:20px; color:#999;">첫 번째 리뷰를 남겨보세요!</div>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                data.reviews.forEach(r => {
+                    const item = document.createElement('div');
+                    item.className = 'review-card';
+                    item.innerHTML = `
+                        <div class="review-header">
+                            <span class="review-author">${r.author}</span>
+                            <span class="review-stars">★ ${r.rating}</span>
+                        </div>
+                        <div class="review-text">${r.content}</div>
+                        <div class="review-date">${r.createdAt}</div>
+                    `;
+                    container.appendChild(item);
+                });
+            } catch (err) {
+                container.innerHTML = `
+                    <div style="background:#fff2f0; padding:12px; border-radius:10px; border:1px solid #ffccc7; color:#cf1322; font-size:12px;">
+                        ⚠️ <strong>리뷰 서비스 장애 격리 안내</strong><br>
+                        현재 리뷰 서버(review-service :8085)가 일시 점검 중입니다.<br>
+                        (하지만 치킨 주문 및 결제는 100% 정상 작동합니다!)
+                    </div>
+                `;
+            }
+        }
+
+        async function submitReview() {
+            const text = document.getElementById('newReviewText').value.trim();
+            if (!text) {
+                showMobilePush('리뷰 작성 안내', '리뷰 내용을 입력해주세요.', 'warning');
+                return;
+            }
+            try {
+                const res = await fetch('/api/review/review/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        storeId: currentStore.id,
+                        author: '배민러버',
+                        rating: 5.0,
+                        content: text
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showMobilePush('리뷰 등록 완료', '소중한 리뷰가 등록되었습니다!', 'success');
+                    document.getElementById('newReviewText').value = '';
+                    loadStoreReviews(currentStore.id);
+                    loadReviewsCount(currentStore.id);
+                    appendLog(`💬 [Review-Service] 새 리뷰 등록 완료 (ReviewID: ${data.reviewId})`);
+                }
+            } catch (err) {
+                showMobilePush('리뷰 등록 실패', err.message || '리뷰 서비스에 연결할 수 없습니다.', 'danger');
+            }
+        }
+
+        // Cart & Checkout Management
+        let selectedPayMethod = '배민페이';
+
+        function addToCart(id, name, price) {
+            cartItems.push({ id, name, price });
+            updateCartUI();
+            appendLog(`🛒 [Cart] 장바구니 담기: ${name} (${price.toLocaleString()}원)`);
+            showMobilePush('장바구니 담기', `${name}을(를) 장바구니에 담았습니다.`, 'success', 2000);
+        }
+
+        function updateCartUI() {
+            const count = cartItems.length;
+            const tipVal = currentStore ? (currentStore.tip || currentStore.deliveryFee || 0) : 0;
+            const subtotal = cartItems.reduce((sum, i) => sum + i.price, 0);
+            const total = count > 0 ? (subtotal + tipVal) : 0;
+            document.getElementById('cartCountText').innerText = `장바구니 ${count}개`;
+            document.getElementById('cartTotalText').innerText = `${total.toLocaleString()}원 주문하기`;
+            document.getElementById('btnOrderSubmit').disabled = (count === 0);
+        }
+
+        function selectPayMethod(el, method) {
+            document.querySelectorAll('.checkout-method-card').forEach(c => {
+                c.classList.remove('active');
+                const checkEl = c.querySelector('.pay-check-icon');
+                if (checkEl) {
+                    checkEl.style.color = '#cbd5e1';
+                    checkEl.style.fontWeight = '400';
+                    checkEl.style.fontSize = '11px';
+                    checkEl.textContent = '선택';
+                }
+            });
+            el.classList.add('active');
+            const checkEl = el.querySelector('.pay-check-icon');
+            if (checkEl) {
+                checkEl.style.color = 'var(--baemin-mint)';
+                checkEl.style.fontWeight = '800';
+                checkEl.style.fontSize = '14px';
+                checkEl.textContent = '✓';
+            }
+            selectedPayMethod = method;
+            document.getElementById('btnPayLabel').textContent = `${method}로 결제하기`;
+        }
+
+        function openCheckoutView() {
+            if (cartItems.length === 0) {
+                showMobilePush('장바구니 안내', '장바구니에 담긴 메뉴가 없습니다.', 'warning');
+                return;
+            }
+
+            const storeName = currentStore ? currentStore.name : '배민 맛집';
+            const tipVal = currentStore ? (currentStore.tip || currentStore.deliveryFee || 0) : 0;
+            const subtotal = cartItems.reduce((sum, i) => sum + i.price, 0);
+            const grandTotal = subtotal + tipVal;
+
+            document.getElementById('checkoutStoreName').textContent = storeName;
+            document.getElementById('checkoutItemCount').textContent = `총 ${cartItems.length}개 메뉴`;
+
+            const listEl = document.getElementById('checkoutItemsList');
+            listEl.innerHTML = '';
+            cartItems.forEach(i => {
+                const itemDiv = document.createElement('div');
+                itemDiv.style.display = 'flex';
+                itemDiv.style.justifyContent = 'space-between';
+                itemDiv.style.color = '#333';
+                itemDiv.innerHTML = `
+                    <span>• ${i.name}</span>
+                    <span style="font-weight:700;">${i.price.toLocaleString()}원</span>
+                `;
+                listEl.appendChild(itemDiv);
+            });
+
+            document.getElementById('checkoutSubtotal').textContent = `${subtotal.toLocaleString()}원`;
+            document.getElementById('checkoutDeliveryFee').textContent = `+${tipVal.toLocaleString()}원`;
+            document.getElementById('checkoutGrandTotal').textContent = `${grandTotal.toLocaleString()}원`;
+            document.getElementById('btnPayTotalText').textContent = `${grandTotal.toLocaleString()}원`;
+            document.getElementById('btnPayLabel').textContent = `${selectedPayMethod}로 결제하기`;
+
+            switchView('viewCheckout');
+        }
+
+        async function submitFinalPayment() {
+            // 🔒 Pre-Flight Check: 결제 서비스(Payment Pod) 생존 여부 실시간 확인
+            const isPaymentDown = document.getElementById('nodePayment').classList.contains('down');
+            if (isPaymentDown) {
+                appendLog(`❌ [Checkout] 결제 파드(Payment Pod) 오프라인 상태! ➔ 카드/계좌 승인 불가로 결제 즉시 차단`);
+                showMobilePush('결제 승인 실패', '결제 파드가 오프라인 상태입니다. 카드 승인을 진행할 수 없습니다.', 'danger', 4500);
+                return;
+            }
+
+            const btn = document.getElementById('btnPaySubmit');
+            btn.disabled = true;
+            document.getElementById('btnPayLabel').textContent = '결제 승인 요청 중... 💳';
+
+            try {
+                await executeOrder();
+            } finally {
+                btn.disabled = false;
+                document.getElementById('btnPayLabel').textContent = `${selectedPayMethod}로 결제하기`;
+            }
+        }
+
+        // 4. Execute Order (Choreography Saga Pipeline)
+        async function executeOrder() {
+            if (cartItems.length === 0) return;
+            const tipVal = currentStore ? (currentStore.tip || currentStore.deliveryFee || 0) : 0;
+            const subtotal = cartItems.reduce((sum, i) => sum + i.price, 0);
+            const total = subtotal + tipVal;
+
+            appendLog(`💳 [Checkout] ${selectedPayMethod} 결제 승인 요청 (총 ${total.toLocaleString()}원)`);
+            appendLog(`📦 [Order-Service] 주문 요청 접수 중... (${currentStore.name})`);
+
+            try {
+                const res = await fetch('/api/order/order/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        storeName: currentStore.name,
+                        items: cartItems,
+                        totalAmount: total,
+                        paymentMethod: selectedPayMethod
+                    })
+                });
+                const result = await res.json();
+
+                if (result.success) {
+                    const serverInfo = result.processedBy ? ` [처리서버 Pod: ${result.processedBy}]` : '';
+                    appendLog(`✨ [Order-Service] 주문 DB 기록 완료${serverInfo} (주문번호: ${result.orderNo})`);
+                    appendLog(`🚀 [Redis Queue] 주문 이벤트 비동기 Push! ➔ payment-service로 전달`);
+                    appendLog(`🔔 [Redis Queue] 알림 이벤트 비동기 Push! ➔ notification_queue 적재`);
+
+                    showMobilePush('주문 및 결제 완료', `${result.orderNo} · ${selectedPayMethod} 승인 완료 (${result.processedBy || 'baemin-order'})`, 'success', 3500);
+                    cartItems = [];
+                    updateCartUI();
+
+                    setTimeout(() => {
+                        const isPaymentDown = document.getElementById('nodePayment').classList.contains('down');
+                        const isDeliveryDown = document.getElementById('nodeDelivery').classList.contains('down');
+                        const isNotifDown = document.getElementById('nodeNotification').classList.contains('down');
+
+                        // 1. Payment Pod Event Processing
+                        if (isPaymentDown) {
+                            appendLog(`⚠️ [Payment-Service] 결제 서비스 오프라인(DOWN) 상태! ➔ 주문 이벤트가 Redis queue에 안전 대기 중 (결제 보류)`);
+                            appendLog(`⏸️ [Delivery-Service] 결제 미완료로 인한 배차 대기 (결제 승인 후 배차 진행)`);
+                            appendLog(`⏸️ [Notification-Service] 결제 미완료로 인한 알림톡 발송 보류 (결제 완료 후 발송)`);
+                        } else {
+                            appendLog(`💳 [Payment-Service] Redis 이벤트 수신 ➔ ${selectedPayMethod} 결제 승인 완료!`);
+
+                            // 2. Delivery Pod Event Processing (Payment Completed)
+                            if (isDeliveryDown) {
+                                appendLog(`⚠️ [Delivery-Service] 배송 서비스 오프라인(DOWN) 상태! ➔ 결제 완료 이벤트 대기 중 (배차 보류)`);
+                            } else {
+                                appendLog(`🛵 [Delivery-Service] Redis 이벤트 수신 ➔ 전담 라이더 즉시 배차!`);
+                            }
+
+                            // 3. Notification Pod Event Processing (Payment Completed)
+                            if (isNotifDown) {
+                                appendLog(`⚠️ [Notification-Service] 알림 서비스 오프라인(DOWN) 상태! ➔ 알림 이벤트가 notification_queue에 안전 보관`);
+                            } else {
+                                appendLog(`🔔 [Notification-Service] Redis 이벤트 수신 ➔ 고객 실시간 결제/주문 알림톡 발송 완료!`);
+                                updateNotificationBadge();
+                            }
+                        }
+
+                        switchTab('orders');
+                    }, 1200);
+                } else {
+                    showMobilePush('주문 접수 실패', result.message || '주문 처리에 실패했습니다.', 'danger');
+                }
+            } catch (err) {
+                appendLog(`❌ [Order-Service] 주문 서비스 장애 발생: ${err.message}`);
+                showMobilePush('주문 서버 장애', '주문 서비스 파드에 연결할 수 없습니다.', 'danger');
+            }
+        }
+
+        // =========================================================================
+        // 🔔 Notification Modal & EDA Recovery Tracking Logic
+        // =========================================================================
+        function openNotificationModal() {
+            document.getElementById('notifModal').classList.add('active');
+            loadNotifications();
+        }
+
+        function closeNotificationModal() {
+            document.getElementById('notifModal').classList.remove('active');
+        }
+
+        async function loadNotifications() {
+            const container = document.getElementById('notifListContainer');
+            container.innerHTML = '<div style="text-align:center; padding:20px; color:#888;">알림 내역 동기화 중...</div>';
+
+            try {
+                const res = await fetch('/api/notification/notification/list');
+                if (!res.ok) throw new Error('알림 서버 응답 오류');
+                const list = await res.json();
+
+                if (!list || list.length === 0) {
+                    container.innerHTML = '<div style="text-align:center; padding:30px 0; color:#999;">수신된 알림이 없습니다.</div>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                list.forEach(n => {
+                    const card = document.createElement('div');
+                    card.style.background = '#f8fafc';
+                    card.style.border = '1px solid #e2e8f0';
+                    card.style.borderRadius = '10px';
+                    card.style.padding = '10px 12px';
+                    card.style.marginBottom = '8px';
+                    card.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <span style="font-size:11.5px; font-weight:700; color:#0284c7;">📢 알림톡 발송완료</span>
+                            <span style="font-size:10px; color:#888;">${n.sentAt || ''}</span>
+                        </div>
+                        <div style="font-size:12.5px; font-weight:700; color:#1e293b; margin-bottom:3px;">${n.message}</div>
+                        <div style="display:flex; justify-content:space-between; font-size:10.5px; color:#64748b;">
+                            <span>수신: ${n.recipient}</span>
+                            <span>발송 Pod: <strong>${n.sentBy || 'worker'}</strong></span>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+
+                const badge = document.getElementById('notifBadge');
+                if (list.length > 0) {
+                    badge.style.display = 'inline-block';
+                    badge.textContent = list.length;
+                }
+            } catch (err) {
+                container.innerHTML = `<div style="text-align:center; padding:20px; color:#e056fd; font-size:12px;">⚠️ 알림 서비스 오프라인 상태 (서버 중단)<br><span style="color:#666; font-size:11px;">(주문 이벤트는 Redis 큐에 안전히 보관됩니다.)</span></div>`;
+            }
+        }
+
+        async function updateNotificationBadge() {
+            try {
+                const res = await fetch('/api/notification/notification/list');
+                if (res.ok) {
+                    const list = await res.json();
+                    const badge = document.getElementById('notifBadge');
+                    if (list.length > 0) {
+                        badge.style.display = 'inline-block';
+                        badge.textContent = list.length;
+                    }
+                }
+            } catch {}
+        }
+
+        function switchView(viewId) {
+            document.querySelectorAll('.view-panel').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
+
+        function showMainView() {
+            switchView('viewMain');
+            updateTabBar('home');
+        }
+
+        function switchTab(tab) {
+            if (tab === 'orders') {
+                switchView('viewOrders');
+                updateTabBar('orders');
+                loadOrderHistory();
+            } else if (tab === 'favorites') {
+                switchView('viewFavorites');
+                updateTabBar('favorites');
+                renderFavoritesList();
+            } else if (tab === 'my') {
+                switchView('viewMy');
+                updateTabBar('my');
+            }
+        }
+
+        function updateTabBar(tab) {
+            document.getElementById('tabHome').classList.toggle('active', tab === 'home');
+            const favTab = document.getElementById('tabFavorites');
+            if (favTab) favTab.classList.toggle('active', tab === 'favorites');
+            document.getElementById('tabOrders').classList.toggle('active', tab === 'orders');
+            document.getElementById('tabMy').classList.toggle('active', tab === 'my');
+        }
+
+        async function loadOrderHistory() {
+            const container = document.getElementById('orderHistoryContainer');
+            container.innerHTML = '<div style="text-align:center; padding:30px; color:#888;">주문/배달 현황 조회중...</div>';
+
+            try {
+                const [orderRes, dlvRes] = await Promise.all([
+                    fetch('/api/order/order/list').then(r => r.json()).catch(() => []),
+                    fetch('/api/delivery/delivery/track').then(r => r.json()).catch(() => null)
+                ]);
+
+                if (!orderRes || orderRes.length === 0) {
+                    container.innerHTML = '<div style="text-align:center; padding:40px 0; color:#999;">주문 내역이 없습니다.</div>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                orderRes.forEach(o => {
+                    const item = document.createElement('div');
+                    item.style.border = '1px solid #e2e8f0';
+                    item.style.borderRadius = '14px';
+                    item.style.padding = '14px';
+                    item.style.marginBottom = '12px';
+                    item.style.background = '#ffffff';
+
+                    item.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:11.5px; color:#666;">
+                            <span>${o.orderNo}</span>
+                            <span style="color:#2AC1BC; font-weight:700;">주문 접수완료</span>
+                        </div>
+                        <div style="font-size:15px; font-weight:800; margin-bottom:4px;">${o.storeName}</div>
+                        <div style="font-size:12.5px; color:#555; margin-bottom:8px;">
+                            ${o.items.map(i => i.name).join(', ')}
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed #eee; padding-top:8px;">
+                            <span style="font-size:14px; font-weight:800;">${o.totalAmount.toLocaleString()}원</span>
+                            <span style="font-size:11.5px; color:#2AC1BC; font-weight:700;">배민페이 결제승인 ✓</span>
+                        </div>
+                        ${dlvRes && dlvRes.riderName ? `
+                        <div style="margin-top:8px; background:#ebf8f7; padding:8px 10px; border-radius:8px; font-size:11.5px; color:#1f9490;">
+                            🛵 <strong>${dlvRes.riderName}</strong> (${dlvRes.status})<br>
+                            예상 배달 소요시간: <strong>${dlvRes.etaMinutes}분 후 도착 예정</strong>
+                        </div>` : `
+                        <div style="margin-top:8px; background:#fff1f0; padding:8px 10px; border-radius:8px; font-size:11.5px; color:#cf1322; border:1px solid #ffa39e;">
+                            ⚠️ <strong>배송 서비스 일시 오프라인 (배차 대기)</strong><br>
+                            (결제는 완료되었으며, 배송 서버 복구 시 전담 라이더가 즉시 자동 배차됩니다.)
+                        </div>`}
+                    `;
+                    container.appendChild(item);
+                });
+            } catch (err) {
+                container.innerHTML = '<div style="color:red;">조회 실패: ' + err.message + '</div>';
+            }
+        }
+
+        // 5. Health Check for all Microservices & Topology Update
+        async function checkNode(url, nodeEl, ledEl) {
+            try {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error();
+                const data = await res.json().catch(() => ({}));
+                nodeEl.classList.remove('down');
+                ledEl.classList.remove('red');
+                return { success: true, data };
+            } catch {
+                nodeEl.classList.add('down');
+                ledEl.classList.add('red');
+                return { success: false, data: null };
+            }
+        }
+
+        let prevServiceStatus = { store: true, order: true, payment: true, delivery: true, review: true, notification: true };
+        let hasInitializedHealth = false;
+
+        async function checkAllMicroservices() {
+            const [s, o, p, d, r, notif] = await Promise.all([
+                checkNode('/api/store/health', document.getElementById('nodeStore'), document.getElementById('ledStore')),
+                checkNode('/api/order/health', document.getElementById('nodeOrder'), document.getElementById('ledOrder')),
+                checkNode('/api/payment/health', document.getElementById('nodePayment'), document.getElementById('ledPayment')),
+                checkNode('/api/delivery/health', document.getElementById('nodeDelivery'), document.getElementById('ledDelivery')),
+                checkNode('/api/review/health', document.getElementById('nodeReview'), document.getElementById('ledReview')),
+                checkNode('/api/notification/health', document.getElementById('nodeNotification'), document.getElementById('ledNotification'))
+            ]);
+
+            // Live Stream Event: Pod Recovery Detection
+            if (hasInitializedHealth) {
+                if (!prevServiceStatus.delivery && d.success) {
+                    appendLog(`✨ [Delivery-Service] 배송 서비스 복구(RECOVERED)! ➔ 라이더 자동 배차 시스템 정상 가동`);
+                }
+                if (!prevServiceStatus.notification && notif.success) {
+                    appendLog(`✨ [Notification-Service] 알림 서비스 복구(RECOVERED)! ➔ Redis 대기열 미발송 알림 일괄 발송 완료!`);
+                    updateNotificationBadge();
+                }
+                if (!prevServiceStatus.payment && p.success) {
+                    appendLog(`✨ [Payment-Service] 결제 서비스 복구(RECOVERED)! ➔ 밀려있던 결제 요청 일괄 승인 완료!`);
+                    appendLog(`🛵 [Delivery-Service] 결제 완료 이벤트 수신 ➔ 대기 중이던 라이더 즉시 배차 시작!`);
+                    appendLog(`🔔 [Notification-Service] 결제 완료 이벤트 수신 ➔ 고객 최종 주문/결제 알림톡 발송 완료!`);
+                    updateNotificationBadge();
+                }
+                if (!prevServiceStatus.store && s.success) {
+                    appendLog(`✨ [Store-Service] 가게 카탈로그 서비스 복구(RECOVERED)!`);
+                    loadStores();
+                }
+                if (!prevServiceStatus.review && r.success) {
+                    appendLog(`✨ [Review-Service] 리뷰 서비스 복구(RECOVERED)!`);
+                }
+            } else {
+                hasInitializedHealth = true;
+            }
+
+            prevServiceStatus = {
+                store: s.success,
+                order: o.success,
+                payment: p.success,
+                delivery: d.success,
+                review: r.success,
+                notification: notif.success
+            };
+
+            // Update Notification Status & Pending Queue Count
+            const statusEl = document.getElementById('modalNotifServerStatus');
+            const countEl = document.getElementById('modalPendingCount');
+            if (statusEl && countEl) {
+                if (notif.success && notif.data) {
+                    statusEl.textContent = '● 서비스 정상';
+                    statusEl.style.color = '#2ea043';
+                    countEl.textContent = notif.data.pendingInQueue || 0;
+                } else {
+                    statusEl.textContent = '● 서비스 오프라인 (대기열 적재 중)';
+                    statusEl.style.color = '#f85149';
+                }
+            }
+
+            updateLines();
+        }
+
+        // 6. Complete Database & Message Queue Clean Reset (Initial Docker State)
+        async function resetAllDatabases() {
+            const confirmed = confirm(
+                "⚠️ [전체 DB 초기화]\n\n모든 주문 내역, 결제 승인 기록, 배달 상태, 알림 이력, 새로 작성한 리뷰 및 Redis 큐를\n도커가 처음 실행되었을 때의 '완전 초기 상태(Clean State)'로 되돌리시겠습니까?"
+            );
+            if (!confirmed) return;
+
+            appendLog("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            appendLog("🗑️ [System] 전체 마이크로서비스 DB 및 Redis 큐 초기화 진행...");
+
+            try {
+                await Promise.allSettled([
+                    fetch('/api/order/reset', { method: 'POST' }).then(r => r.json()),
+                    fetch('/api/payment/reset', { method: 'POST' }).then(r => r.json()),
+                    fetch('/api/delivery/reset', { method: 'POST' }).then(r => r.json()),
+                    fetch('/api/notification/reset', { method: 'POST' }).then(r => r.json()),
+                    fetch('/api/review/reset', { method: 'POST' }).then(r => r.json()),
+                    fetch('/api/store/reset', { method: 'POST' }).then(r => r.json())
+                ]);
+
+                appendLog("✨ [Order-DB] MariaDB 주문 테이블 TRUNCATE & Redis 큐 비우기 완료");
+                appendLog("✨ [Payment-DB] PostgreSQL 결제 테이블 TRUNCATE 완료");
+                appendLog("✨ [Delivery-DB] Redis 배송 상태 및 라이더 배차 초기화 완료");
+                appendLog("✨ [Notification-DB] PostgreSQL 알림 발송 이력 초기화 완료");
+                appendLog("✨ [Review-DB] MongoDB 리뷰 초기 6개 시드 데이터 복원 완료");
+                appendLog("✨ [Store-DB] PostgreSQL 가게 4곳 및 메뉴판 초기 시드 복원 완료");
+                appendLog("🎉 [System] 도커 첫 배포 당시의 깨끗한 상태로 100% 복원되었습니다!");
+                appendLog("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+                // Clear Client State
+                cartItems = [];
+                updateCartUI();
+
+                const badge = document.getElementById('notifBadge');
+                if (badge) {
+                    badge.style.display = 'none';
+                    badge.textContent = '0';
+                }
+
+                // Reload views
+                favoriteStoreIds = new Set([1]);
+                updateFavoritesUI();
+                showMainView();
+                loadStores();
+                checkAllMicroservices();
+
+                showMobilePush('시스템 초기화 완료', '모든 DB와 메시지 큐가 초기 상태로 초기화되었습니다.', 'success', 3500);
+            } catch (err) {
+                appendLog(`❌ [System] DB 초기화 중 오류 발생: ${err.message}`);
+                showMobilePush('초기화 실패', err.message || 'DB 초기화 중 오류가 발생했습니다.', 'danger');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            applyTransform();
+            loadStores();
+            updateFavoritesUI();
+            updateLines();
+            checkAllMicroservices();
+            updateNotificationBadge();
+            setInterval(checkAllMicroservices, 3000);
+        });
+    </script>
 </body>
 
 </html>
